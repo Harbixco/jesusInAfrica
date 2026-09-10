@@ -142,7 +142,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="text-[#0F172A] hover:underline font-bold"
             >
-              Veltrixhub
+              Veltrix Hub
             </a>
           </p>
         </div>

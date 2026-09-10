@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { ChevronDown, X, Heart } from 'lucide-react'
 import { navLinks, socialLinks } from '../../data/navigation'
@@ -15,6 +16,11 @@ const socialIconMap = {
 export default function MobileMenu({ open, isOpen, onClose }) {
   const isVisible = open ?? isOpen ?? false
   const location = useLocation()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Auto-expand dropdown if user is on one of its subpages
   const isConnectSubpage = location.pathname === '/testimonies' || location.pathname === '/prayer'
@@ -37,9 +43,11 @@ export default function MobileMenu({ open, isOpen, onClose }) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isVisible, onClose])
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <div
-      className={`fixed inset-0 z-[100] lg:hidden transition-visibility duration-300 ${
+      className={`fixed inset-0 z-[1000] lg:hidden ${
         isVisible ? 'visible' : 'invisible pointer-events-none'
       }`}
       role="dialog"
@@ -57,7 +65,7 @@ export default function MobileMenu({ open, isOpen, onClose }) {
 
       {/* Drawer Panel with slide transition */}
       <div
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col z-10 transition-transform duration-300 ease-out transform ${
+        className={`fixed top-0 right-0 h-full h-[100dvh] w-[85%] max-w-sm bg-white shadow-2xl flex flex-col z-10 transition-transform duration-300 ease-out transform ${
           isVisible ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -180,6 +188,7 @@ export default function MobileMenu({ open, isOpen, onClose }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
