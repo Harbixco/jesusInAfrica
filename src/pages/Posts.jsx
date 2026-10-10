@@ -1,11 +1,30 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { CalendarDays, ArrowRight } from 'lucide-react'
 import Seo from '../components/common/Seo'
 import CTASection from '../components/home/CTASection'
-import { posts } from '../data/posts'
+import { posts as staticPosts } from '../data/posts'
 import { thirdbackground } from '../assets/images'
+import api from '../utils/api'
 
 export default function Posts() {
+  const [postsList, setPostsList] = useState(staticPosts)
+
+  useEffect(() => {
+    const fetchLivePosts = async () => {
+      try {
+        const data = await api.get('/posts', { status: 'published' })
+        if (data.success && data.posts && data.posts.length > 0) {
+          setPostsList(data.posts)
+        }
+      } catch (err) {
+        console.warn('Using static posts fallback:', err.message)
+      }
+    }
+
+    fetchLivePosts()
+  }, [])
+
   return (
     <>
       <Seo
@@ -37,9 +56,9 @@ export default function Posts() {
       <section className="py-10 lg:py-20 bg-white">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {posts.map((post) => (
+            {postsList.map((post) => (
               <article
-                key={post.id}
+                key={post._id || post.id || post.slug}
                 className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col group"
               >
                 <Link
@@ -51,6 +70,9 @@ export default function Posts() {
                     alt={post.title}
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80'
+                    }}
                   />
                 </Link>
 

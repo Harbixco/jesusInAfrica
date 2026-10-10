@@ -133,7 +133,12 @@ export default function Footer() {
       {/* Bottom Footer Bar */}
       <div className="border-t border-[#0F172A]/15 py-6 bg-[#E98C00]">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-[#0F172A] font-medium">
-          <p>Copyright © 2026 Jesus in Africa (JIA)</p>
+          <p>
+            Copyright © 2026 Jesus in Africa (JIA) •{' '}
+            <Link to="/admin" className="hover:underline font-bold opacity-80 hover:opacity-100">
+              Admin Portal
+            </Link>
+          </p>
           <p>
             Design by{' '}
             <a

@@ -18,11 +18,41 @@ import {
 } from 'lucide-react'
 import Seo from '../components/common/Seo'
 import CTASection from '../components/home/CTASection'
-import { posts } from '../data/posts'
+import { posts as staticPosts } from '../data/posts'
+import api from '../utils/api'
 
 export default function PostDetail() {
   const { slug } = useParams()
-  const post = posts.find((p) => p.slug === slug || String(p.id) === slug)
+  const [livePost, setLivePost] = useState(() =>
+    staticPosts.find((p) => p.slug === slug || String(p.id) === slug) || null
+  )
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true)
+        const data = await api.get(`/posts/${slug}`)
+        if (data.success && data.post) {
+          setLivePost(data.post)
+        }
+      } catch (err) {
+        // Fallback to static post
+        const found = staticPosts.find((p) => p.slug === slug || String(p.id) === slug)
+        if (found) {
+          setLivePost(found)
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPost()
+  }, [slug])
+
+  const post = livePost
+  const posts = staticPosts
+
 
   // Comments state with localStorage support
   const storageKey = `jia_comments_${post?.id || 'default'}`
