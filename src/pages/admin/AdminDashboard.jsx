@@ -13,6 +13,7 @@ import {
   FolderTree,
 } from 'lucide-react'
 import api from '../../utils/api'
+import { adminLogo } from '../../assets/images'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState(null)
@@ -43,13 +44,20 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       {/* Top Welcome Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-800">
-        <div>
-          <h1 className="font-heading font-bold text-2xl sm:text-3xl text-white">
-            Ministry Affairs Dashboard
-          </h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Overview and publication controls for the Jesus In Africa website.
-          </p>
+        <div className="flex items-center gap-4">
+          <img
+            src={adminLogo}
+            alt="Jesus In Africa"
+            className="h-16 w-auto object-contain flex-shrink-0 drop-shadow-lg"
+          />
+          <div>
+            <h1 className="font-heading font-bold text-2xl sm:text-3xl text-white">
+              Ministry Affairs Dashboard
+            </h1>
+            <p className="text-slate-400 text-sm mt-1">
+              Overview and publication controls for the Jesus In Africa website.
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">

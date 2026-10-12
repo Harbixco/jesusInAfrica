@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { Lock, Mail, Eye, EyeOff, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react'
-import { logo } from '../../assets/images'
+import { adminLogo } from '../../assets/images'
 import { useAdminAuth } from '../../context/AdminAuthContext'
 
 export default function AdminLogin() {
@@ -33,7 +33,7 @@ export default function AdminLogin() {
 
   const fillDefaultCredentials = () => {
     setEmail('admin@jesusinafrica.org')
-    setPassword('admin123')
+    setPassword('@Laura24$')
     setError('')
   }
 
@@ -45,19 +45,22 @@ export default function AdminLogin() {
 
       {/* Main Card */}
       <div className="w-full max-w-md relative z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-4">
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="relative mb-5 flex items-center justify-center">
+            {/* Ambient subtle warm glow behind logo */}
+            <div className="absolute inset-0 bg-[#FD9800]/15 rounded-full blur-2xl scale-125 pointer-events-none" />
             <img
-              src={logo}
+              src={adminLogo}
               alt="Jesus In Africa"
-              className="h-16 w-auto object-contain drop-shadow-lg"
+              className="relative h-44 sm:h-52 w-auto object-contain drop-shadow-[0_15px_35px_rgba(0,0,0,0.6)] hover:scale-105 transition-transform duration-300"
             />
           </div>
-          <h1 className="font-heading font-bold text-3xl text-white tracking-tight">
-            Jesus In Africa
-          </h1>
-          <p className="text-slate-400 text-sm mt-1">
-            Admin Control Center &amp; Ministry Affairs
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FD9800]/10 border border-[#FD9800]/25 text-[#FD9800] text-xs font-semibold tracking-wider uppercase mb-2 shadow-sm">
+            <ShieldCheck size={14} />
+            <span>Admin Control Center</span>
+          </div>
+          <p className="text-slate-400 text-xs sm:text-sm font-medium">
+            Ministry Affairs &amp; Publication Portal
           </p>
         </div>
 

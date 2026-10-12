@@ -11,7 +11,7 @@ import {
   Shield,
   Flame,
 } from 'lucide-react'
-import { logo } from '../../assets/images'
+import { adminLogo } from '../../assets/images'
 import { useAdminAuth } from '../../context/AdminAuthContext'
 
 export default function AdminLayout({ children }) {
@@ -70,10 +70,10 @@ export default function AdminLayout({ children }) {
     <div className="min-h-screen bg-[#0B1120] text-slate-100 flex flex-col md:flex-row font-body">
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#0F172A] border-b border-slate-800">
-        <div className="flex items-center gap-2.5">
-          <img src={logo} alt="Jesus In Africa" className="h-8 w-auto object-contain" />
-          <span className="font-heading font-bold text-base text-white tracking-wide">
-            JIA <span className="text-[#FD9800]">Admin</span>
+        <div className="flex items-center gap-3">
+          <img src={adminLogo} alt="Jesus In Africa" className="h-9 w-auto object-contain" />
+          <span className="font-heading font-bold text-sm text-white tracking-wide">
+            JIA <span className="text-[#FD9800]">Control Panel</span>
           </span>
         </div>
         <button
@@ -92,19 +92,22 @@ export default function AdminLayout({ children }) {
         }`}
       >
         {/* Sidebar Brand Header */}
-        <div className="p-5 border-b border-slate-800/80 flex items-center gap-3">
-          <img
-            src={logo}
-            alt="Jesus In Africa"
-            className="h-10 w-auto object-contain flex-shrink-0"
-          />
-          <div className="min-w-0">
-            <h1 className="font-heading font-bold text-base text-white tracking-wide leading-tight truncate">
-              Jesus In Africa
-            </h1>
-            <p className="text-[11px] font-semibold tracking-wider text-[#FD9800] uppercase">
+        <div className="p-4 border-b border-slate-800/80">
+          <div className="flex items-center justify-center py-2.5 px-2 rounded-xl bg-slate-900/40 border border-slate-800/60 hover:border-[#FD9800]/30 transition-colors">
+            <img
+              src={adminLogo}
+              alt="Jesus In Africa"
+              className="h-16 w-auto object-contain drop-shadow-lg"
+            />
+          </div>
+          <div className="flex items-center justify-between mt-3 px-1">
+            <span className="text-[11px] font-semibold tracking-wider text-[#FD9800] uppercase flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Control Panel
-            </p>
+            </span>
+            <span className="text-[10px] text-slate-400 font-medium bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700/60">
+              Admin
+            </span>
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 // Central image exports
 import logo from './logo.png'
+import adminLogo from './admin-logo.png'
 import favicon from './favicon.png'
 import heroSlide1 from './hero-slide-1.jpg'
 import heroSlide2 from './hero-slide-2.png'
@@ -36,6 +37,7 @@ const aboutUs = aboutus
 
 export {
   logo,
+  adminLogo,
   favicon,
   heroSlide1,
   heroSlide2,
