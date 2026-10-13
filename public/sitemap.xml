@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.jesusinafrica.org/</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- About Us -->
+  <url>
+    <loc>https://www.jesusinafrica.org/about</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <!-- Blog & Ministry Posts -->
+  <url>
+    <loc>https://www.jesusinafrica.org/posts</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <!-- Events & Crusade Outreaches -->
+  <url>
+    <loc>https://www.jesusinafrica.org/events</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Connect / Community -->
+  <url>
+    <loc>https://www.jesusinafrica.org/connect</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- Testimonies of Healing & Miracles -->
+  <url>
+    <loc>https://www.jesusinafrica.org/testimonies</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Prayer Requests -->
+  <url>
+    <loc>https://www.jesusinafrica.org/prayer</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- Contact Ministry -->
+  <url>
+    <loc>https://www.jesusinafrica.org/contact</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <!-- Donate & Support -->
+  <url>
+    <loc>https://www.jesusinafrica.org/donate</loc>
+    <lastmod>2026-10-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
