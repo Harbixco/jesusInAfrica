@@ -140,9 +140,10 @@ export default function AdminPostEditor() {
         setImage(res.url)
       }
     } catch (err) {
-      alert(`Image upload failed: ${err.message}`)
+      alert(`Image upload error: ${err.message}`)
     } finally {
       setUploadingImage(false)
+      if (e.target) e.target.value = ''
     }
   }
 
@@ -422,10 +423,10 @@ export default function AdminPostEditor() {
                 />
               </div>
 
-              <div className="pt-2">
-                <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 cursor-pointer transition-colors border border-slate-700/60">
-                  <Upload size={14} className="text-[#FD9800]" />
-                  <span>{uploadingImage ? 'Uploading...' : 'Upload Image File'}</span>
+              <div className="pt-2 flex items-center gap-3">
+                <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 cursor-pointer transition-colors border border-slate-700/60 disabled:opacity-50">
+                  <Upload size={14} className={`text-[#FD9800] ${uploadingImage ? 'animate-bounce' : ''}`} />
+                  <span>{uploadingImage ? 'Uploading to Cloud CDN...' : 'Upload Image File'}</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -434,6 +435,15 @@ export default function AdminPostEditor() {
                     disabled={uploadingImage}
                   />
                 </label>
+                {image && (
+                  <button
+                    type="button"
+                    onClick={() => setImage('')}
+                    className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                  >
+                    Remove Image
+                  </button>
+                )}
               </div>
             </div>
 
