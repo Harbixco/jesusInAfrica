@@ -16,6 +16,7 @@ import {
   Heading,
 } from 'lucide-react'
 import api from '../../utils/api'
+import { compressImage } from '../../utils/imageOptimizer'
 
 export default function AdminPostEditor() {
   const { id } = useParams()
@@ -128,14 +129,16 @@ export default function AdminPostEditor() {
     setContentBlocks((prev) => prev.filter((_, i) => i !== index))
   }
 
-  // Image Upload handler
+  // Image Upload handler with pre-upload compression
   const handleImageFileChange = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     try {
       setUploadingImage(true)
-      const res = await api.uploadImage(file)
+      // Compress image client-side to modern WebP and max 1600x1200 dimensions
+      const optimizedFile = await compressImage(file, 1600, 1200, 0.82)
+      const res = await api.uploadImage(optimizedFile)
       if (res.success && res.url) {
         setImage(res.url)
       }
