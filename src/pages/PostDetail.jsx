@@ -160,7 +160,7 @@ export default function PostDetail() {
             </Link>
             <span>/</span>
             <Link to="/posts" className="hover:text-[#FD9800] transition-colors">
-              Posts
+              Blogs
             </Link>
             <span>/</span>
             <span className="text-[#FD9800] truncate max-w-[200px] sm:max-w-none">
@@ -249,6 +249,27 @@ export default function PostDetail() {
                     </blockquote>
                   )
                 }
+                if (block.type === 'image') {
+                  const imgSrc = block.url || block.src || block.text
+                  if (!imgSrc) return null
+                  return (
+                    <figure key={idx} className="my-8 space-y-2">
+                      <div className="overflow-hidden rounded-xl bg-slate-900 border border-gray-200 shadow-md">
+                        <img
+                          src={imgSrc}
+                          alt={block.caption || block.text || 'Article photo'}
+                          className="w-full max-h-[550px] object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      {(block.caption || (block.text && block.text !== imgSrc)) && (
+                        <figcaption className="text-center text-xs text-slate-500 italic">
+                          {block.caption || block.text}
+                        </figcaption>
+                      )}
+                    </figure>
+                  )
+                }
                 return <p key={idx}>{block.text}</p>
               })}
             </div>
@@ -270,26 +291,31 @@ export default function PostDetail() {
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                  {post.gallery.map((photo, pIdx) => (
-                    <button
-                      key={pIdx}
-                      type="button"
-                      onClick={() => setActiveImageIndex(pIdx)}
-                      className="group relative aspect-[4/3] overflow-hidden bg-slate-100 border border-gray-200 text-left focus:outline-none focus:ring-2 focus:ring-[#FD9800]"
-                    >
-                      <img
-                        src={photo.src}
-                        alt={photo.caption || `Gallery photo ${pIdx + 1}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
-                        <span className="text-[11px] font-medium text-white line-clamp-2 drop-shadow">
-                          {photo.caption}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+                  {post.gallery.map((photo, pIdx) => {
+                    const photoSrc = typeof photo === 'string' ? photo : (photo?.src || photo?.url || '')
+                    const photoCaption = typeof photo === 'object' ? photo?.caption : ''
+                    if (!photoSrc) return null
+                    return (
+                      <button
+                        key={pIdx}
+                        type="button"
+                        onClick={() => setActiveImageIndex(pIdx)}
+                        className="group relative aspect-[4/3] overflow-hidden bg-slate-100 border border-gray-200 text-left focus:outline-none focus:ring-2 focus:ring-[#FD9800] rounded-sm"
+                      >
+                        <img
+                          src={photoSrc}
+                          alt={photoCaption || `Gallery photo ${pIdx + 1}`}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2.5">
+                          <span className="text-[11px] font-medium text-white line-clamp-2 drop-shadow">
+                            {photoCaption || 'View photo'}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  })}
                 </div>
               </section>
             )}
@@ -485,7 +511,7 @@ export default function PostDetail() {
                 to="/posts"
                 className="mt-4 sm:mt-0 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[1.5px] text-[#FD9800] hover:text-[#E98C00] transition-colors"
               >
-                View All Posts <ArrowRight size={14} />
+                View All Blogs <ArrowRight size={14} />
               </Link>
             </div>
 
@@ -557,47 +583,60 @@ export default function PostDetail() {
             </button>
 
             <div className="relative w-full max-h-[75vh] flex items-center justify-center overflow-hidden">
-              <img
-                src={post.gallery[activeImageIndex].src}
-                alt={post.gallery[activeImageIndex].caption || 'Enlarged photo'}
-                className="max-h-[75vh] max-w-full object-contain rounded shadow-2xl"
-              />
+              {(() => {
+                const currentItem = post.gallery[activeImageIndex]
+                const currentSrc = typeof currentItem === 'string' ? currentItem : (currentItem?.src || currentItem?.url || '')
+                const currentCaption = typeof currentItem === 'object' ? currentItem?.caption : ''
+                return (
+                  <>
+                    <img
+                      src={currentSrc}
+                      alt={currentCaption || 'Enlarged photo'}
+                      className="max-h-[75vh] max-w-full object-contain rounded shadow-2xl"
+                    />
 
-              {post.gallery.length > 1 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setActiveImageIndex(
-                        (prev) => (prev - 1 + post.gallery.length) % post.gallery.length
-                      )
-                    }}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-[#FD9800] text-white flex items-center justify-center transition-colors"
-                  >
-                    <ChevronLeft size={22} />
-                  </button>
+                    {post.gallery.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setActiveImageIndex(
+                              (prev) => (prev - 1 + post.gallery.length) % post.gallery.length
+                            )
+                          }}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-[#FD9800] text-white flex items-center justify-center transition-colors"
+                        >
+                          <ChevronLeft size={22} />
+                        </button>
 
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setActiveImageIndex((prev) => (prev + 1) % post.gallery.length)
-                    }}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-[#FD9800] text-white flex items-center justify-center transition-colors"
-                  >
-                    <ChevronRight size={22} />
-                  </button>
-                </>
-              )}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setActiveImageIndex((prev) => (prev + 1) % post.gallery.length)
+                          }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-[#FD9800] text-white flex items-center justify-center transition-colors"
+                        >
+                          <ChevronRight size={22} />
+                        </button>
+                      </>
+                    )}
+                  </>
+                )
+              })()}
             </div>
 
-            {post.gallery[activeImageIndex].caption && (
-              <p className="text-white/90 text-sm text-center mt-3 font-medium px-4">
-                {post.gallery[activeImageIndex].caption} ({activeImageIndex + 1} /{' '}
-                {post.gallery.length})
-              </p>
-            )}
+            {(() => {
+              const currentItem = post.gallery[activeImageIndex]
+              const currentCaption = typeof currentItem === 'object' ? currentItem?.caption : ''
+              return (
+                <p className="text-white/90 text-sm text-center mt-3 font-medium px-4">
+                  {currentCaption ? `${currentCaption} • ` : ''}
+                  ({activeImageIndex + 1} / {post.gallery.length})
+                </p>
+              )
+            })()}
           </div>
         </div>
       )}

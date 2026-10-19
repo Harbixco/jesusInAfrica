@@ -1,7 +1,7 @@
 export const navLinks = [
   { label: 'Home', path: '/' },
   { label: 'About Us', path: '/about' },
-  { label: 'Posts', path: '/posts' },
+  { label: 'Blogs', path: '/posts' },
   { label: 'Events', path: '/events' },
   {
     label: 'Connect',

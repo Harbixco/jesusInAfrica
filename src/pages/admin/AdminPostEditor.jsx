@@ -5,6 +5,7 @@ import {
   Save,
   Upload,
   Image as ImageIcon,
+  Images,
   Plus,
   Trash2,
   Sparkles,
@@ -14,6 +15,9 @@ import {
   Type,
   Quote,
   Heading,
+  Loader2,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react'
 import api from '../../utils/api'
 import { compressImage } from '../../utils/imageOptimizer'
@@ -41,10 +45,16 @@ export default function AdminPostEditor() {
   const [status, setStatus] = useState('published')
   const [featured, setFeatured] = useState(false)
 
+  // Event Gallery State (Multi-Image)
+  const [gallery, setGallery] = useState([])
+  const [uploadingGallery, setUploadingGallery] = useState(false)
+  const [galleryProgress, setGalleryProgress] = useState('')
+
   // Content blocks state
   const [contentBlocks, setContentBlocks] = useState([
-    { type: 'paragraph', text: '' },
+    { type: 'paragraph', text: '', url: '', author: '' },
   ])
+  const [uploadingBlockIndex, setUploadingBlockIndex] = useState(null)
 
   // UI State
   const [loading, setLoading] = useState(isEditing)
@@ -91,10 +101,28 @@ export default function AdminPostEditor() {
           setImage(p.image || '')
           setStatus(p.status || 'published')
           setFeatured(Boolean(p.featured))
-          if (Array.isArray(p.content) && p.content.length > 0) {
-            setContentBlocks(p.content)
+          if (Array.isArray(p.gallery) && p.gallery.length > 0) {
+            setGallery(
+              p.gallery.map((g) =>
+                typeof g === 'string'
+                  ? { src: g, caption: '' }
+                  : { src: g.src || g.url || '', caption: g.caption || '' }
+              )
+            )
           } else {
-            setContentBlocks([{ type: 'paragraph', text: '' }])
+            setGallery([])
+          }
+          if (Array.isArray(p.content) && p.content.length > 0) {
+            setContentBlocks(
+              p.content.map((b) => ({
+                type: b.type || 'paragraph',
+                text: b.text || '',
+                url: b.url || b.src || '',
+                author: b.author || '',
+              }))
+            )
+          } else {
+            setContentBlocks([{ type: 'paragraph', text: '', url: '', author: '' }])
           }
         }
       } catch (err) {
@@ -110,7 +138,7 @@ export default function AdminPostEditor() {
 
   // Block management
   const addBlock = (type = 'paragraph') => {
-    setContentBlocks((prev) => [...prev, { type, text: '', author: '' }])
+    setContentBlocks((prev) => [...prev, { type, text: '', url: '', author: '' }])
   }
 
   const updateBlock = (index, field, value) => {
@@ -123,20 +151,19 @@ export default function AdminPostEditor() {
 
   const removeBlock = (index) => {
     if (contentBlocks.length <= 1) {
-      setContentBlocks([{ type: 'paragraph', text: '' }])
+      setContentBlocks([{ type: 'paragraph', text: '', url: '', author: '' }])
       return
     }
     setContentBlocks((prev) => prev.filter((_, i) => i !== index))
   }
 
-  // Image Upload handler with pre-upload compression
+  // Cover Image Upload handler with pre-upload compression
   const handleImageFileChange = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     try {
       setUploadingImage(true)
-      // Compress image client-side to modern WebP and max 1600x1200 dimensions
       const optimizedFile = await compressImage(file, 1600, 1200, 0.82)
       const res = await api.uploadImage(optimizedFile)
       if (res.success && res.url) {
@@ -148,6 +175,79 @@ export default function AdminPostEditor() {
       setUploadingImage(false)
       if (e.target) e.target.value = ''
     }
+  }
+
+  // Upload image inside a content block
+  const handleBlockImageUpload = async (index, file) => {
+    if (!file) return
+    try {
+      setUploadingBlockIndex(index)
+      const optimizedFile = await compressImage(file, 1600, 1200, 0.82)
+      const res = await api.uploadImage(optimizedFile)
+      if (res.success && res.url) {
+        updateBlock(index, 'url', res.url)
+      }
+    } catch (err) {
+      alert(`Block image upload error: ${err.message}`)
+    } finally {
+      setUploadingBlockIndex(null)
+    }
+  }
+
+  // Multi-Image Gallery Handlers
+  const handleGalleryFilesChange = async (e) => {
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
+
+    setUploadingGallery(true)
+    try {
+      const newItems = []
+      for (let i = 0; i < files.length; i++) {
+        setGalleryProgress(`Optimizing & uploading ${i + 1} of ${files.length}...`)
+        const optimized = await compressImage(files[i], 1600, 1200, 0.82)
+        const res = await api.uploadImage(optimized)
+        if (res.success && res.url) {
+          newItems.push({ src: res.url, caption: '' })
+        }
+      }
+      if (newItems.length > 0) {
+        setGallery((prev) => [...prev, ...newItems])
+      }
+    } catch (err) {
+      alert(`Gallery upload error: ${err.message}`)
+    } finally {
+      setUploadingGallery(false)
+      setGalleryProgress('')
+      if (e.target) e.target.value = ''
+    }
+  }
+
+  const addGalleryItemByUrl = () => {
+    setGallery((prev) => [...prev, { src: '', caption: '' }])
+  }
+
+  const updateGalleryItem = (index, field, value) => {
+    setGallery((prev) => {
+      const copy = [...prev]
+      copy[index] = { ...copy[index], [field]: value }
+      return copy
+    })
+  }
+
+  const removeGalleryItem = (index) => {
+    setGallery((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const moveGalleryItem = (index, direction) => {
+    setGallery((prev) => {
+      const copy = [...prev]
+      const targetIndex = direction === 'up' ? index - 1 : index + 1
+      if (targetIndex < 0 || targetIndex >= copy.length) return prev
+      const temp = copy[index]
+      copy[index] = copy[targetIndex]
+      copy[targetIndex] = temp
+      return copy
+    })
   }
 
   // Form Submission
@@ -166,10 +266,29 @@ export default function AdminPostEditor() {
       return
     }
 
-    // Filter out completely empty blocks
-    const filteredContent = contentBlocks.filter(
-      (b) => b.text && b.text.trim().length > 0
-    )
+    // Filter and sanitize content blocks
+    const filteredContent = contentBlocks
+      .filter((b) => {
+        if (b.type === 'image') return Boolean(b.url || b.src || b.text)
+        return b.text && b.text.trim().length > 0
+      })
+      .map((b) => {
+        if (b.type === 'image') {
+          return {
+            type: 'image',
+            url: (b.url || b.src || b.text || '').trim(),
+            text: (b.text || '').trim(),
+          }
+        }
+        return b
+      })
+
+    const cleanGallery = gallery
+      .map((g) => ({
+        src: (g.src || g.url || '').trim(),
+        caption: (g.caption || '').trim(),
+      }))
+      .filter((g) => g.src.length > 0)
 
     const postPayload = {
       title: title.trim(),
@@ -179,9 +298,13 @@ export default function AdminPostEditor() {
       date: date.trim(),
       excerpt: excerpt.trim(),
       image: image.trim(),
+      gallery: cleanGallery,
       status,
       featured,
-      content: filteredContent.length > 0 ? filteredContent : [{ type: 'paragraph', text: excerpt }],
+      content:
+        filteredContent.length > 0
+          ? filteredContent
+          : [{ type: 'paragraph', text: excerpt }],
     }
 
     try {
@@ -478,20 +601,166 @@ export default function AdminPostEditor() {
           </div>
         </div>
 
+        {/* Card 2b: Multi-Image Photo Gallery */}
+        <div className="bg-[#0F172A] border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800/80 pb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-heading font-bold text-lg text-white">
+                  Event Photo Gallery
+                </h2>
+                <span className="px-2 py-0.5 rounded-full bg-[#FD9800]/20 text-[#FD9800] text-xs font-bold font-mono">
+                  {gallery.length} {gallery.length === 1 ? 'photo' : 'photos'}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Upload multiple photos to display in the &quot;Moments from the Event / See More Images&quot; interactive gallery grid.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FD9800] hover:bg-[#E98C00] text-slate-950 font-bold text-xs cursor-pointer transition-colors shadow-sm disabled:opacity-50">
+                <Upload size={14} className={uploadingGallery ? 'animate-bounce' : ''} />
+                <span>{uploadingGallery ? 'Uploading...' : 'Upload Multiple Photos'}</span>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleGalleryFilesChange}
+                  className="hidden"
+                  disabled={uploadingGallery}
+                />
+              </label>
+
+              <button
+                type="button"
+                onClick={addGalleryItemByUrl}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-colors border border-slate-700/60"
+              >
+                <Plus size={14} />
+                <span>+ Add by URL</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Upload Progress Banner */}
+          {uploadingGallery && (
+            <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2.5">
+              <Loader2 size={16} className="animate-spin text-[#FD9800]" />
+              <span>{galleryProgress || 'Optimizing and uploading selected photos to Cloud CDN...'}</span>
+            </div>
+          )}
+
+          {/* Gallery Items Grid */}
+          {gallery.length === 0 ? (
+            <div className="py-10 border-2 border-dashed border-slate-800 rounded-xl text-center space-y-2">
+              <Images size={36} className="mx-auto text-slate-600" />
+              <p className="text-slate-400 text-xs">No gallery photos added yet.</p>
+              <p className="text-slate-600 text-[11px]">
+                Click &quot;Upload Multiple Photos&quot; to choose pictures from your phone or computer.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
+              {gallery.map((item, gIdx) => (
+                <div
+                  key={gIdx}
+                  className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col group relative"
+                >
+                  {/* Photo Preview */}
+                  <div className="relative aspect-[16/10] bg-slate-950 overflow-hidden">
+                    {item.src ? (
+                      <img
+                        src={item.src}
+                        alt={item.caption || `Gallery photo ${gIdx + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none'
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-600 text-xs">
+                        Enter photo URL below
+                      </div>
+                    )}
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-[11px] font-mono text-white">
+                      #{gIdx + 1}
+                    </span>
+
+                    {/* Quick Action Overlay */}
+                    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
+                      {gIdx > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => moveGalleryItem(gIdx, 'up')}
+                          title="Move left/up"
+                          className="p-1 rounded bg-black/75 text-slate-300 hover:text-white"
+                        >
+                          <ArrowUp size={13} />
+                        </button>
+                      )}
+                      {gIdx < gallery.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={() => moveGalleryItem(gIdx, 'down')}
+                          title="Move right/down"
+                          className="p-1 rounded bg-black/75 text-slate-300 hover:text-white"
+                        >
+                          <ArrowDown size={13} />
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryItem(gIdx)}
+                        title="Delete photo"
+                        className="p-1 rounded bg-rose-950/90 text-rose-300 hover:bg-rose-900 hover:text-white"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Photo Controls */}
+                  <div className="p-3 space-y-2 flex-1 flex flex-col justify-between">
+                    <div>
+                      <input
+                        type="text"
+                        value={item.src}
+                        onChange={(e) => updateGalleryItem(gIdx, 'src', e.target.value)}
+                        placeholder="Image URL (https://...)"
+                        className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700/80 rounded-lg text-white text-[11px] font-mono placeholder-slate-600 focus:outline-none focus:border-[#FD9800]"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={item.caption || ''}
+                        onChange={(e) => updateGalleryItem(gIdx, 'caption', e.target.value)}
+                        placeholder="Optional caption (e.g. Altar call)"
+                        className="w-full px-2.5 py-1.5 bg-slate-950 border border-slate-700/80 rounded-lg text-slate-300 text-xs placeholder-slate-600 focus:outline-none focus:border-[#FD9800]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Card 3: Structured Content Builder */}
         <div className="bg-[#0F172A] border border-slate-800 rounded-2xl p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800/80 pb-3">
             <div>
               <h2 className="font-heading font-bold text-lg text-white">
                 Article Body Content
               </h2>
               <p className="text-xs text-slate-400">
-                Build your article with paragraphs, subheadings, and scriptures.
+                Build your article with paragraphs, subheadings, scriptures, and inline photos.
               </p>
             </div>
 
             {/* Quick Add block buttons */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center flex-wrap gap-1.5">
               <button
                 type="button"
                 onClick={() => addBlock('paragraph')}
@@ -516,6 +785,14 @@ export default function AdminPostEditor() {
                 <Quote size={13} className="text-[#FD9800]" />
                 <span>+ Quote</span>
               </button>
+              <button
+                type="button"
+                onClick={() => addBlock('image')}
+                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+              >
+                <ImageIcon size={13} className="text-[#FD9800]" />
+                <span>+ Inline Image</span>
+              </button>
             </div>
           </div>
 
@@ -524,12 +801,12 @@ export default function AdminPostEditor() {
             {contentBlocks.map((block, index) => (
               <div
                 key={index}
-                className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 relative group"
+                className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-3 relative group"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-[#FD9800]">
-                      #{index + 1} {block.type}
+                      #{index + 1} {block.type === 'image' ? 'Inline Image' : block.type}
                     </span>
                     <select
                       value={block.type}
@@ -539,6 +816,7 @@ export default function AdminPostEditor() {
                       <option value="paragraph">Paragraph</option>
                       <option value="heading">Subheading</option>
                       <option value="quote">Scripture / Quote</option>
+                      <option value="image">Inline Image / Photo</option>
                     </select>
                   </div>
 
@@ -576,6 +854,68 @@ export default function AdminPostEditor() {
                       placeholder="Quote attribution (e.g. 1 Corinthians 4:20 or Prophet Oludamola)"
                       className="w-full px-3 py-1.5 bg-[#080E1A] border border-slate-700/80 rounded-lg text-slate-400 text-xs focus:outline-none focus:border-[#FD9800]"
                     />
+                  </div>
+                ) : block.type === 'image' ? (
+                  <div className="space-y-3 bg-[#080E1A] p-3 rounded-xl border border-slate-700/60">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                      <div className="space-y-2">
+                        <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                          Image Source URL or File
+                        </label>
+                        <input
+                          type="text"
+                          value={block.url || ''}
+                          onChange={(e) => updateBlock(index, 'url', e.target.value)}
+                          placeholder="https://... or choose file"
+                          className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-[#FD9800]"
+                        />
+                        <div className="flex items-center gap-2">
+                          <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 cursor-pointer border border-slate-700/60">
+                            <Upload size={13} className={uploadingBlockIndex === index ? 'animate-bounce text-[#FD9800]' : ''} />
+                            <span>{uploadingBlockIndex === index ? 'Uploading...' : 'Choose File'}</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0]
+                                if (f) handleBlockImageUpload(index, f)
+                              }}
+                              className="hidden"
+                              disabled={uploadingBlockIndex === index}
+                            />
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Mini Preview */}
+                      <div className="h-28 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden">
+                        {block.url ? (
+                          <img
+                            src={block.url}
+                            alt="Block preview"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = 'none'
+                            }}
+                          />
+                        ) : (
+                          <span className="text-[11px] text-slate-600">No image selected</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                        Caption (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={block.text || ''}
+                        onChange={(e) => updateBlock(index, 'text', e.target.value)}
+                        placeholder="Caption displayed below the image in the article..."
+                        className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-slate-300 text-xs placeholder-slate-500 focus:outline-none focus:border-[#FD9800]"
+                      />
+                    </div>
                   </div>
                 ) : (
                   <textarea

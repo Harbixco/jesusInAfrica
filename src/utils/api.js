@@ -102,6 +102,26 @@ export const api = {
     }
     return data
   },
+
+  // Upload multiple images batch
+  async uploadImages(files) {
+    const formData = new FormData()
+    for (const file of files) {
+      formData.append('images', file)
+    }
+
+    const res = await fetch(`${API_BASE_URL}/upload/multiple`, {
+      method: 'POST',
+      headers: getAuthHeaders(true),
+      body: formData,
+    })
+
+    const data = await res.json()
+    if (!res.ok) {
+      throw new Error(data.message || 'Multiple images upload failed')
+    }
+    return data
+  },
 }
 
 export default api

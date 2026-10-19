@@ -73,6 +73,8 @@ export default function App() {
                 <Route path="/about-us" element={<About />} />
                 <Route path="/posts" element={<Posts />} />
                 <Route path="/posts/:slug" element={<PostDetail />} />
+                <Route path="/blogs" element={<Posts />} />
+                <Route path="/blogs/:slug" element={<PostDetail />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/connect" element={<Connect />} />
                 <Route path="/testimonies" element={<Testimonies />} />

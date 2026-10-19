@@ -47,7 +47,7 @@ export default function Posts() {
             Articles &amp; Recaps
           </p>
           <h1 className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white drop-shadow-md">
-            Posts
+            Blogs
           </h1>
         </div>
       </section>
@@ -97,7 +97,7 @@ export default function Posts() {
                       to={`/posts/${post.slug}`}
                       className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[1.5px] text-[#FD9800] group-hover:text-[#E98C00] transition-colors"
                     >
-                      Read Full Post
+                      Read Full Blog
                       <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
