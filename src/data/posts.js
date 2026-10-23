@@ -1,79 +1,117 @@
-import {
-  heroSlide3,
-  postOgunDay2,
-  postOgunDay1,
-  jiaOgun2024,
-  jiaOgun2024_4,
-  jiaOgun2024_6,
-  jiaOgun2024_9,
-  jiaOgun2024_10,
-  jiaOgun2024_14,
-  jiaOgun2024_16,
-  evangelismOutreachJIA,
-  eventSummit,
-  eventHealing,
-  thirdbackground,
-} from '../assets/images'
-
 export const posts = [
   {
     id: 1,
     slug: 'glorious-evening-ogun-state-supernatural-conference-2024',
     title: 'A Glorious Evening at the Ogun State Supernatural Conference',
     excerpt:
-      'It was a glorious evening, and the presence of God filled the atmosphere at the Ogun State Supernatural Conference on the 14th of September 2024. Mighty miracles, deliverance, and spiritual empowerment were witnessed.',
-    image: heroSlide3,
+      'It was an evening steeped in the raw, tangible glory of God at the Ogun State Supernatural Conference on the 14th of September 2024. Mighty miracles, deliverance from long-standing bondages, and apostolic empowerment swept across the sanctuary as Jesus touched every open heart.',
+    image: '/images/ogun-2024/PSH_5504.jpg',
     date: 'September 14, 2024',
-    category: 'Recap',
+    category: 'Supernatural Recap',
     author: 'Prophet Oludamola Daramola',
-    readTime: '4 min read',
+    readTime: '6 min read',
     content: [
       {
         type: 'paragraph',
-        text: 'The atmosphere at the Ogun State Supernatural Conference was charged with divine expectation from the moment the doors opened. Believers, seekers, and leaders gathered across communities with hearts eager to experience the tangible power and love of Jesus Christ.',
+        text: 'As the twilight settled over Ogun State, the atmosphere inside the auditorium grew intensely charged with divine anticipation. Pilgrims, seekers, and families had gathered from across the state and neighboring communities with one united longing: to encounter the resurrected Christ in the fullness of His supernatural power.',
       },
       {
         type: 'heading',
-        text: 'A Manifestation of the Spirit and Power',
+        text: 'The Descent of the Glory Cloud',
       },
       {
         type: 'paragraph',
-        text: 'As worship ascended, the tangible weight of God’s glory rested upon the auditorium. Songs of consecration broke out spontaneously, and chains of spiritual stagnation began to give way. The general testimony was clear: this was not an ordinary church program, but an encounter designed to shift destinies.',
+        text: 'The evening service erupted with a wave of deep, unfiltered adoration. There was no pretense, only a room full of hungry souls yielding completely to the Holy Spirit. As voices ascended in reverent unison, a sacred solemnity fell upon the auditorium—a holy weight known across scriptures as the Kabod of God.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5571.jpg',
+        caption: 'High-energy praise and celestial adoration electrified the atmosphere during the grand evening session.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Songs of surrender gave way to fiery declarations of spiritual freedom. In that atmosphere, the presence of the Lord became so tangible that hearts were softened and chains of generational delay, depression, and spiritual heaviness began to dissolve in the light of His truth.',
       },
       {
         type: 'quote',
-        text: '“For the kingdom of God is not in word, but in power.” — 1 Corinthians 4:20. When Jesus enters any city, burdens are lifted and light dispels every darkness.',
+        text: '“For the kingdom of God does not consist in talk, but in power.” — 1 Corinthians 4:20. When Jesus enters any territory, tears of shame are wiped away, sickness is banished, and light dispels every darkness.',
         author: 'Prophet Oludamola Daramola',
       },
       {
+        type: 'heading',
+        text: 'The Living Word & The Fire of Revival',
+      },
+      {
         type: 'paragraph',
-        text: 'Mighty testimonies of instant healing were recorded throughout the evening. Many who had suffered chronic back pain, joint stiffness, and long-standing afflictions testified of sudden relief and complete liberation after prayer. The power of God swept through the congregation, igniting a hunger for personal revival and kingdom evangelism.',
+        text: 'Mounting the platform with deep apostolic burden, Prophet Oludamola Daramola delivered an uncompromising message on the mandate of the believer in this prophetic hour. He proclaimed that Africa is not a land forsaken, but the very staging ground for heaven’s end-time harvest.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5519.jpg',
+        caption: 'Prophet Oludamola Daramola declaring the unshakeable counsel of God and releasing apostolic decrees over Africa.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Opening from the scriptures, the servant of God emphasized that true faith is not a passive wish, but an aggressive agreement with what heaven has already finalized. The sermon pierced through complacency, awakening a fierce desire in attendees to live as carriers of the holy fire in their families, marketplaces, and universities.',
       },
       {
         type: 'heading',
-        text: 'Commissioned to Shine the Light',
+        text: 'Signs, Wonders, and Sudden Healings',
       },
       {
         type: 'paragraph',
-        text: 'The evening culminated in a powerful time of impartation. Attendees were exhorted to carry the fire back to their neighborhoods, campuses, workplaces, and local churches. Jesus in Africa continues to see lives transformed as the gospel is preached with bold demonstration.',
+        text: 'Following the Word came a swift and undeniable manifestation of the Holy Spirit. As hands were lifted and prayers were made, testimonies broke out across the room. Several delegates suffering from chronic lumbar spine agony, persistent migrainous oppression, and severe joint stiffness declared sudden, complete relief.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5544.jpg',
+        caption: 'Delegates crowding the altar, weeping tears of gratitude and liberation under divine power.',
+      },
+      {
+        type: 'paragraph',
+        text: 'At the altar call, dozens surged forward—some weeping in repentance, others trembling under the weight of the Spirit. Youth, elders, and entire households received personal words of prophetic clarity, turning what began as a conference into an epochal night of spiritual rebirth.',
+      },
+      {
+        type: 'heading',
+        text: 'Commissioned as Torchbearers for Africa',
+      },
+      {
+        type: 'paragraph',
+        text: 'The night concluded with an impartation of boldness. Attendees were instructed not to hoard the encounter within four walls, but to go forth as fearless ambassadors of Jesus Christ across their neighborhoods, schools, and cities. The fire ignited in Ogun State will not be quenched; it is spreading across Africa.',
       },
     ],
     gallery: [
       {
-        src: jiaOgun2024,
-        caption: 'The congregation in deep worship and prayer',
+        src: '/images/ogun-2024/PSH_5504.jpg',
+        caption: 'Prophet Oludamola Daramola ministering with prophetic authority on stage',
       },
       {
-        src: jiaOgun2024_10,
-        caption: 'Hands lifted high in adoration during the evening session',
+        src: '/images/ogun-2024/PSH_5571.jpg',
+        caption: 'Vibrant musical ministration lifting the entire sanctuary into high praise',
       },
       {
-        src: jiaOgun2024_14,
-        caption: 'Ministering to attendees at the altar call',
+        src: '/images/ogun-2024/PSH_5519.jpg',
+        caption: 'The declaration of the uncompromised Word of God',
       },
       {
-        src: thirdbackground,
-        caption: 'Passionate intercession for Africa and the nations',
+        src: '/images/ogun-2024/PSH_5587.jpg',
+        caption: 'Unrestrained joy and celebration as miracles were confirmed',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5544.jpg',
+        caption: 'Attendees kneeling at the altar during the deep deliverance call',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5508.jpg',
+        caption: 'Young believers lost in deep, transformative intercession',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5516.jpg',
+        caption: 'Prophet Oludamola releasing prophetic decrees into destinies',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5580.jpg',
+        caption: 'The congregation basking in the radiant presence of the Holy Spirit',
       },
     ],
     comments: [
@@ -82,14 +120,21 @@ export const posts = [
         name: 'Pastor Michael Adeyemi',
         date: 'September 15, 2024',
         message:
-          'What a supernatural atmosphere! My wife and I were deeply refreshed in our spirits. Glory to Jesus for what He did in Ogun State.',
+          'What a supernatural atmosphere! My wife and I were deeply refreshed in our spirits. The tangible presence of Jesus in that room shifted something permanent in our home.',
       },
       {
         id: 'c2',
         name: 'Grace Oladipo',
         date: 'September 16, 2024',
         message:
-          'The healings were undeniably real. I arrived with acute neck stiffness and left completely pain-free! Praise God!',
+          'The healings were undeniably real. I arrived with acute neck stiffness and terrible back pain for months, and I left completely pain-free! All praise to Jesus!',
+      },
+      {
+        id: 'c3',
+        name: 'Bro. Emmanuel Kolawole',
+        date: 'September 17, 2024',
+        message:
+          'The fire of God hit my heart during the altar call. My passion for prayer has returned with a double portion. God bless JIA!',
       },
     ],
   },
@@ -98,68 +143,122 @@ export const posts = [
     slug: 'supernatural-conference-ogun-state-2024-day-2-recap',
     title: 'Supernatural Conference, Ogun State, 2024, Day 2 Recap',
     excerpt:
-      'The sun was shining brightly as the morning session kicked off around 10:40 am, and there was an undeniable sense of excitement in the air. Pastor Daramola ministered healing and deep revelatory truths of the Word.',
-    image: postOgunDay2,
+      'The morning sun was shining brightly as delegates poured into the auditorium around 10:40 am for Day 2. With high-octane praise, deep doctrinal revelations on faith, and extraordinary manifestations of healing, hearts were thoroughly set ablaze for kingdom purpose.',
+    image: '/images/ogun-2024/PSH_5549.jpg',
     date: 'September 14, 2024',
-    category: 'Conference',
+    category: 'Conference Teaching',
     author: 'JIA Media Team',
-    readTime: '5 min read',
+    readTime: '6 min read',
     content: [
       {
         type: 'paragraph',
-        text: 'Day 2 of the Supernatural Conference in Ogun State marked a pivotal deepening of spiritual understanding. Starting promptly at 10:40 am, delegates were greeted with high-energy praise and an earnest anticipation for fresh revelation from the Scriptures.',
+        text: 'Day 2 of the Ogun State Supernatural Conference launched with electric vitality. By 10:40 am, the sanctuary was brimming with ministers, students, and community families who arrived determined not to miss a second of heaven’s agenda for the day.',
       },
       {
         type: 'heading',
-        text: 'Unpacking the Working of Faith',
+        text: 'High Praise and Joyful Exaltation',
       },
       {
         type: 'paragraph',
-        text: 'During the teaching segment, the emphasis was placed on experiential faith—moving beyond intellectual ascent into bold spiritual action. The teaching stressed that believers must understand their identity and legal rights in Christ Jesus to overcome everyday challenges.',
+        text: 'Before the teaching commenced, the praise choir took the stage with vibrant rhythm and infectious joy. Hands were raised, bodies were dancing, and every heavy spirit was swiftly replaced with the oil of joy. The room was not simply singing songs; they were actively pulling down strongholds through high praise.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5415.jpg',
+        caption: 'The vibrant joy of the Holy Ghost radiating through youth and delegates during the daytime ministration.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Youth from diverse institutions across Ogun State stood side by side with seasoned church elders, capturing precious moments and harmonizing in loud shouts of victory. The generational unity in the room was a prophetic picture of what God is doing across the African continent.',
+      },
+      {
+        type: 'heading',
+        text: 'The Architecture of Biblical Faith',
+      },
+      {
+        type: 'paragraph',
+        text: 'The teaching segment plunged into the core principles of operational faith. It was emphasized that biblical faith is neither blind positive thinking nor an emotional impulse; it is the absolute spiritual conviction born from the hearing and doing of God’s Word.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5485.jpg',
+        caption: 'Minister Abiodun Agbaje expounding the foundational laws of biblical faith and active kingdom authority.',
       },
       {
         type: 'quote',
-        text: '“Faith is not a wishful thought; it is an active alignment with heaven’s reality. When you stand upon the Word, the mountain has no choice but to move.”',
+        text: '“Faith does not wait for feelings or circumstances to align. Faith operates from the throne room, speaking what God has settled in eternity until the physical realm complies.”',
         author: 'General Evangelist Oludamola Daramola',
       },
       {
+        type: 'paragraph',
+        text: 'Delegates opened their notebooks and Bibles, eagerly drinking from the revelatory stream. The message demystified the believer’s authority in Christ, teaching everyday believers how to pray effectively, enforce dominion over infirmity, and walk in divine protection.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5490.jpg',
+        caption: 'A packed auditorium hanging on every word of revelation, soaking in scriptural truths with intense hunger.',
+      },
+      {
         type: 'heading',
-        text: 'Healing and Prophetic Ministrations',
+        text: 'The Prophetic Impartation and Healing Service',
       },
       {
         type: 'paragraph',
-        text: 'Following the Word ministration, an intensive healing service commenced. People lined up to testify of divine touch: ears unstopped, headaches vanishing, and spirits rejuvenated. The joy in the room was palpable as family after family celebrated God’s faithfulness.',
+        text: 'As the doctrinal session reached its zenith, a wave of healing power swept the aisles. People with physical discomfort placed their hands upon their bodies as corporate prayers went forth. What followed were instant shouts of praise as deaf ears opened, sharp chest tightness vanished, and long-standing fatigue was broken.',
       },
       {
         type: 'paragraph',
-        text: 'Youth and ministers were particularly challenged to step out onto their mission fields without fear, recognizing that the Holy Spirit is with them to confirm the message with signs following.',
+        text: 'Young men and women were seen praying fervently for one another, stepping into practical demonstrations of ministry without fear or hesitation. Day 2 proved that when the Word is taught in truth and power, miracles are the natural consequence.',
       },
     ],
     gallery: [
       {
-        src: jiaOgun2024_4,
-        caption: 'Eager listeners taking notes during the Word session',
+        src: '/images/ogun-2024/PSH_5549.jpg',
+        caption: 'Pastors and delegates standing united with hands lifted in high consecration',
       },
       {
-        src: jiaOgun2024_6,
-        caption: 'Ministering the laying on of hands',
+        src: '/images/ogun-2024/PSH_5485.jpg',
+        caption: 'Minister Abiodun Agbaje delivering deep revelatory truths on kingdom authority',
       },
       {
-        src: eventHealing,
-        caption: 'Testimonies shared at the front of the auditorium',
+        src: '/images/ogun-2024/PSH_5415.jpg',
+        caption: 'Joy and radiant smiles filling the faces of the next generation',
       },
       {
-        src: postOgunDay2,
-        caption: 'Day 2 delegates rejoicing after the closing benediction',
+        src: '/images/ogun-2024/PSH_5490.jpg',
+        caption: 'Full auditorium captivated during the deep Word ministration',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5461.jpg',
+        caption: 'Earnest delegates pouring out their hearts in focused, personal prayer',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5457.jpg',
+        caption: 'Children and teenagers lifting holy hands in simple, reverent worship',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5450.jpg',
+        caption: 'Unrestrained rejoicing and dancing before the presence of the King',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5422.jpg',
+        caption: 'Attentive delegates hanging onto every prophetic instruction',
       },
     ],
     comments: [
       {
-        id: 'c3',
+        id: 'c4',
         name: 'David Adeleke',
         date: 'September 15, 2024',
         message:
-          'Day 2 revolutionized my prayer life. The practical teachings on faith have given me bold confidence to share Christ everywhere I go.',
+          'Day 2 revolutionized my walk with God! The clear teaching on how faith works erased years of theological confusion. I am now stepping out with holy boldness.',
+      },
+      {
+        id: 'c5',
+        name: 'Sister Blessing Okoro',
+        date: 'September 15, 2024',
+        message:
+          'The atmosphere during the morning worship was extraordinary. I could feel heavy burdens lifting off my shoulders. Glory to Jesus!',
       },
     ],
   },
@@ -168,64 +267,118 @@ export const posts = [
     slug: 'supernatural-conference-ogun-state-2024-day-1-recap',
     title: 'Supernatural Conference, Ogun State, 2024, Day 1 Recap',
     excerpt:
-      'The day was bright, and the air was filled with anticipation as people streamed into the venue, their faces radiating joy and expectancy. An extraordinary commencement to a life-transforming gathering.',
-    image: postOgunDay1,
+      'The morning was bright and the air thick with anticipation as delegates from diverse cities streamed into the sanctuary for the grand opening on September 13. An extraordinary commencement marked by thunderous thanksgiving and an apostolic awakening for Africa.',
+    image: '/images/ogun-2024/PSH_5497.jpg',
     date: 'September 13, 2024',
-    category: 'Conference',
+    category: 'Conference Opening',
     author: 'JIA Media Team',
-    readTime: '3 min read',
+    readTime: '5 min read',
     content: [
       {
         type: 'paragraph',
-        text: 'The opening day of the Ogun State Supernatural Conference set an electric tone for the entire gathering. From early afternoon, buses and carpools arrived from different towns across Ogun State and surrounding regions.',
+        text: 'From the early hours of Friday, September 13th, the conference grounds were alive with joyful anticipation. Convoy after convoy arrived from Abeokuta, Sagamu, Ijebu-Ode, Lagos, and surrounding rural outposts, carrying believers who had fasted and prayed for this momentous weekend.',
       },
       {
         type: 'heading',
-        text: 'A Heart of Pure Thanksgiving',
+        text: 'A Foundation Laid in Pure Thanksgiving',
       },
       {
         type: 'paragraph',
-        text: 'The conference opened with thunderous thanksgiving, celebrating God’s protection, preservation, and divine mandate over Africa. Attendees lifted their voices in unified prayers for peace, spiritual awakening, and revival in our cities and towns.',
+        text: 'The conference kicked off with a heartfelt session of national thanksgiving. Ministers led the congregation to thank God for His preserving mercy over Nigeria, for open doors across African nations, and for the preservation of families through turbulent economic seasons.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5497.jpg',
+        caption: 'The opening charge led by ministers on stage, uniting the congregation in songs of gratitude.',
+      },
+      {
+        type: 'paragraph',
+        text: 'As the scriptures command in Psalm 100:4, the people entered His gates with thanksgiving and His courts with praise. The collective gratitude was so genuine that it immediately unlocked an extraordinary peace and warmth across the entire sanctuary.',
+      },
+      {
+        type: 'heading',
+        text: 'Soul-Stirring Worship and Consecration',
+      },
+      {
+        type: 'paragraph',
+        text: 'Minister Janet and the anointed worship team stepped forward, leading a sacred sequence of traditional and contemporary hymns. The pure sound of worship filled every corner of the auditorium, causing people to kneel, raise holy hands, and renew their vows of devotion to Christ.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5381.jpg',
+        caption: 'Minister Janet leading deep, soul-stirring worship, welcoming the sweet presence of the Holy Spirit.',
       },
       {
         type: 'quote',
-        text: '“Africa is not forgotten. God is raising an army of believers whose voices will carry fire and redemption to the ends of the earth.”',
+        text: '“Africa is not forgotten. In this season, God is raising a generation of believers whose lives will burn with purity, love, and undeniable spiritual authority.”',
         author: 'Prophet Oludamola Daramola',
       },
       {
         type: 'heading',
-        text: 'Laying the Foundation for the Outpouring',
+        text: 'Laying the Spiritual Groundwork for Revival',
       },
       {
         type: 'paragraph',
-        text: 'The opening message laid bare the necessity of repentance, personal consecration, and undivided focus on Jesus Christ. As hearts were searched and surrendered, tears of renewal flowed freely across the auditorium, setting the stage for the miraculous days that followed.',
+        text: 'The keynote address on Day 1 set the spiritual compass for the entire gathering. Attendees were reminded that miracles are not circus tricks; they are signs pointing a broken world to the living Savior. Repentance, spiritual hunger, and unity among believers were highlighted as the mandatory seeds for genuine community awakening.',
+      },
+      {
+        type: 'image',
+        src: '/images/ogun-2024/PSH_5481.jpg',
+        caption: 'The entire congregation standing united in solemn intercession for Ogun State, Nigeria, and the nations of Africa.',
+      },
+      {
+        type: 'paragraph',
+        text: 'As night fell on Day 1, people lingered long after the benediction, embracing one another and discussing the profound peace they had felt. The foundation had been solidly established, and everyone knew that Day 2 and the grand finale would bring even greater downpours of divine favor.',
       },
     ],
     gallery: [
       {
-        src: jiaOgun2024_9,
-        caption: 'Arrival and registration of delegates on Day 1',
+        src: '/images/ogun-2024/PSH_5497.jpg',
+        caption: 'Ministers and worship team officially opening the conference in joyful praise',
       },
       {
-        src: jiaOgun2024_16,
-        caption: 'Praise and opening worship session',
+        src: '/images/ogun-2024/PSH_5381.jpg',
+        caption: 'Minister Janet in passionate adoration on the conference stage',
       },
       {
-        src: evangelismOutreachJIA,
-        caption: 'Community evangelism outreach team ready in action',
+        src: '/images/ogun-2024/PSH_5481.jpg',
+        caption: 'Delegates standing shoulder to shoulder in corporate intercession',
       },
       {
-        src: eventSummit,
-        caption: 'Delegates joining hands in opening intercession',
+        src: '/images/ogun-2024/PSH_5386.jpg',
+        caption: 'Songs of surrender lifting the hearts of all who gathered',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5411.jpg',
+        caption: 'The conference choir harmonizing in rich, sacred praise',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5435.jpg',
+        caption: 'Unrestrained joy as delegates celebrated God’s eternal faithfulness',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5452.jpg',
+        caption: 'Dynamic praise stirring holy fire across every row of the auditorium',
+      },
+      {
+        src: '/images/ogun-2024/PSH_5478.jpg',
+        caption: 'Quiet moments of rededication and communion on opening night',
       },
     ],
     comments: [
       {
-        id: 'c4',
+        id: 'c6',
         name: 'Sarah Nwosu',
         date: 'September 14, 2024',
         message:
-          'From the very first night, I felt the unmistakable peace of God. This conference will be remembered for years to come!',
+          'From the very first night, I felt the unmistakable peace of God. Traveling down from Lagos was worth every single mile. This conference has marked me forever!',
+      },
+      {
+        id: 'c7',
+        name: 'Pastor Taiwo Ojo',
+        date: 'September 14, 2024',
+        message:
+          'The spirit of prayer on Day 1 was exceptional. Real revival always starts with thanksgiving and deep repentance. Thank you Jesus in Africa team!',
       },
     ],
   },
