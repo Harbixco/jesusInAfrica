@@ -15,7 +15,6 @@ export default function Home() {
         description="Strengthening Believers' Faith. We aim to deepen the faith of believers by teaching them to live by the Word of God and the Spirit."
       />
       <Hero />
-      <ActionCards />
       <WelcomeSection />
       <MediaSection />
       <TestimonialSection />

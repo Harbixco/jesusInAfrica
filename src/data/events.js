@@ -16,7 +16,7 @@ export const events = [
   },
   {
     id: 2,
-    title: 'Healing and Deliverance Crusades',
+    title: 'Jesus Crusade',
     description:
       'Events focused on the miraculous power of God, bringing healing and deliverance to those in need.',
     image: eventHealing,
@@ -24,7 +24,7 @@ export const events = [
   },
   {
     id: 3,
-    title: 'Faith Walk Workshops',
+    title: 'Healing Room',
     description:
       'Practical workshops designed to teach believers how to apply their faith in everyday life and walk in the power of the Spirit.',
     image: eventFaithWalk,

@@ -47,7 +47,7 @@ export default function Navbar() {
               {openDropdown && (
                 <div
                   role="menu"
-                  className="absolute left-0 top-full pt-1 w-52 z-50 animate-fadeIn"
+                  className="absolute left-0 top-full pt-1 w-56 z-50 animate-fadeIn"
                 >
                   <div className="bg-white rounded-sm shadow-[0_4px_15px_rgba(0,0,0,0.12)] border-t-2 border-[#FD9800] py-1.5 overflow-hidden">
                     {link.dropdown.map((item) => (

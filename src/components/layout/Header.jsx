@@ -41,36 +41,46 @@ export default function Header() {
           : 'bg-white/95 backdrop-blur-md py-3.5 border-b border-gray-100'
       }`}
     >
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 relative flex items-center justify-between">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="Jesus in Africa (JIA) Home">
+        <Link to="/" className="flex items-center gap-3 shrink-0 z-10" aria-label="Jesus in Africa (JIA) Home">
           <img
             src={logo}
             alt="Jesus in Africa (JIA)"
-            className="h-12 md:h-14 w-auto object-contain"
+            className="h-11 sm:h-12 md:h-14 w-auto object-contain"
           />
         </Link>
+
+        {/* Mobile Centered Donate Button */}
+        <div className="lg:hidden absolute left-1/2 -translate-x-1/2 z-10">
+          <Link
+            to="/donate"
+            className="inline-flex items-center justify-center bg-[#FD9800] hover:bg-[#E98C00] active:scale-95 text-[#FEF9E1] font-semibold text-xs uppercase tracking-[1.5px] px-4 py-1.5 transition-all duration-200 shadow-sm"
+          >
+            donate
+          </Link>
+        </div>
 
         {/* Desktop Navigation */}
         <Navbar />
 
         {/* Action Button & Mobile Toggle */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 z-10">
           <Link
             to="/donate"
-            className="hidden sm:inline-flex items-center justify-center bg-[#FD9800] hover:bg-[#E98C00] text-[#FEF9E1] font-semibold text-[13px] uppercase tracking-[2px] px-6 py-2.5 transition-all duration-200"
+            className="hidden lg:inline-flex items-center justify-center bg-[#FD9800] hover:bg-[#E98C00] active:scale-95 text-[#FEF9E1] font-semibold text-[13px] uppercase tracking-[2px] px-6 py-2.5 transition-all duration-200 shadow-sm"
           >
             donate
           </Link>
 
           <button
             type="button"
-            className="lg:hidden text-[#0F172A] p-2 sm:p-2.5 rounded-md hover:bg-gray-100 hover:text-[#FD9800] focus:outline-none focus:ring-2 focus:ring-[#FD9800]/50 transition-colors flex items-center justify-center"
+            className="lg:hidden text-[#0F172A] p-1.5 sm:p-2.5 rounded-md hover:bg-gray-100 hover:text-[#FD9800] focus:outline-none focus:ring-2 focus:ring-[#FD9800]/50 transition-colors flex items-center justify-center"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((prev) => !prev)}
           >
-            <Menu size={26} />
+            <Menu size={25} />
           </button>
         </div>
       </div>

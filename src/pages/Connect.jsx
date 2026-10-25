@@ -1,4 +1,4 @@
-import { MessageCircleHeart, HeartHandshake, ArrowRight } from 'lucide-react'
+import { MessageCircleHeart, HeartHandshake, ArrowRight, MessageSquareQuote } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Seo from '../components/common/Seo'
 import CTASection from '../components/home/CTASection'
@@ -20,6 +20,14 @@ const links = [
     to: '/prayer',
     cta: 'Send Prayer Request',
   },
+  {
+    icon: MessageSquareQuote,
+    title: 'Tell Us Your Story',
+    description:
+      "Has God touched your life through Jesus in Africa? Share your testimony and let your story inspire faith across nations.",
+    to: '/tell-us-your-story',
+    cta: 'Share Your Story',
+  },
 ]
 
 export default function Connect() {
@@ -27,7 +35,7 @@ export default function Connect() {
     <>
       <Seo
         title="Connect - Jesus in Africa (JIA)"
-        description="Connect with Jesus in Africa through miraculous testimonies and heartfelt prayer requests."
+        description="Connect with Jesus in Africa through miraculous testimonies, heartfelt prayer requests, and sharing what God has done."
       />
 
       {/* Header Banner */}
@@ -46,7 +54,7 @@ export default function Connect() {
       {/* Main Options */}
       <section className="py-20 lg:py-24 bg-white">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {links.map((item) => {
               const Icon = item.icon
               return (

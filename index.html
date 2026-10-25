@@ -51,6 +51,59 @@
     />
     <meta name="twitter:image" content="https://www.jesusinafrica.org/og-image.jpg" />
     <meta name="theme-color" content="#1a2b49" />
+
+    <!-- Google Structured Data (JSON-LD) Schema for Knowledge Panels & Fast Ranking -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Church",
+          "@id": "https://www.jesusinafrica.org/#organization",
+          "name": "Jesus in Africa",
+          "alternateName": ["JIA", "Jesus in Africa Ministry"],
+          "url": "https://www.jesusinafrica.org/",
+          "logo": "https://www.jesusinafrica.org/favicon.png",
+          "image": "https://www.jesusinafrica.org/og-image.jpg",
+          "description": "Jesus in Africa (JIA) is a Christian ministry dedicated to evangelism, spiritual revival, and healing across Africa and beyond, founded by Prophet Oludamola Daramola.",
+          "founder": {
+            "@type": "Person",
+            "name": "Prophet Oludamola Daramola",
+            "jobTitle": "Lead Evangelist & Founder"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Surulere",
+            "addressRegion": "Lagos State",
+            "addressCountry": "NG"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+2347066400376",
+            "contactType": "general inquiries",
+            "email": "info@jesusinafrica.org",
+            "availableLanguage": ["English", "Yoruba"]
+          },
+          "sameAs": [
+            "http://facebook.com/jesusinafrica20",
+            "https://www.instagram.com/officialjesusinafrica/",
+            "https://t.me/+CEkaXef_7jZiNmNk",
+            "https://www.youtube.com/@officialJesusInAfrica"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://www.jesusinafrica.org/#website",
+          "url": "https://www.jesusinafrica.org/",
+          "name": "Jesus in Africa",
+          "publisher": {
+            "@id": "https://www.jesusinafrica.org/#organization"
+          },
+          "inLanguage": "en-US"
+        }
+      ]
+    }
+    </script>
   </head>
   <body class="bg-white text-[#454F5E] font-body antialiased selection:bg-[#FD9800] selection:text-black">
     <div id="root"></div>

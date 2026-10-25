@@ -9,6 +9,7 @@ export const navLinks = [
     dropdown: [
       { label: 'Testimonies', path: '/testimonies' },
       { label: "Let's Pray With You", path: '/prayer' },
+      { label: 'Tell Us Your Story', path: '/tell-us-your-story' },
     ],
   },
   { label: 'Contact', path: '/contact' },

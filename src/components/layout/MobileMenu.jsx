@@ -23,7 +23,11 @@ export default function MobileMenu({ open, isOpen, onClose }) {
   }, [])
 
   // Auto-expand dropdown if user is on one of its subpages
-  const isConnectSubpage = location.pathname === '/testimonies' || location.pathname === '/prayer'
+  const isConnectSubpage =
+    location.pathname === '/testimonies' ||
+    location.pathname === '/prayer' ||
+    location.pathname === '/tell-us-your-story' ||
+    location.pathname === '/share-your-story'
   const [openDropdown, setOpenDropdown] = useState(isConnectSubpage)
 
   // Close when pathname changes
@@ -88,103 +92,106 @@ export default function MobileMenu({ open, isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 overflow-y-auto px-6 py-6 space-y-1">
-          {navLinks.map((link) => {
-            if (link.dropdown) {
-              const isChildActive = link.dropdown.some((child) => location.pathname === child.path)
+        {/* Navigation Content & Brought Up Donate CTA */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col">
+          {/* Navigation Links */}
+          <nav className="space-y-1">
+            {navLinks.map((link) => {
+              if (link.dropdown) {
+                const isChildActive = link.dropdown.some((child) => location.pathname === child.path)
+
+                return (
+                  <div key={link.label} className="border-b border-gray-100 py-1">
+                    <button
+                      type="button"
+                      className={`w-full flex items-center justify-between py-3 text-[15px] font-semibold transition-colors ${
+                        isChildActive ? 'text-[#FD9800]' : 'text-[#0F172A] hover:text-[#FD9800]'
+                      }`}
+                      onClick={() => setOpenDropdown((prev) => !prev)}
+                      aria-expanded={openDropdown}
+                    >
+                      <span>{link.label}</span>
+                      <ChevronDown
+                        size={18}
+                        className={`transition-transform duration-200 ${
+                          openDropdown ? 'rotate-180 text-[#FD9800]' : 'text-gray-400'
+                        }`}
+                      />
+                    </button>
+
+                    <div
+                      className={`overflow-hidden transition-all duration-300 ${
+                        openDropdown ? 'max-h-64 opacity-100 pl-4 pb-2 space-y-1' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      {link.dropdown.map((item) => (
+                        <NavLink
+                          key={item.path}
+                          to={item.path}
+                          onClick={onClose}
+                          className={({ isActive }) =>
+                            `block py-2 text-[14px] font-medium transition-colors ${
+                              isActive
+                                ? 'text-[#FD9800] font-bold pl-2 border-l-2 border-[#FD9800]'
+                                : 'text-[#454F5E] hover:text-[#FD9800]'
+                            }`
+                          }
+                        >
+                          {item.label}
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
 
               return (
-                <div key={link.label} className="border-b border-gray-100 py-1">
-                  <button
-                    type="button"
-                    className={`w-full flex items-center justify-between py-3.5 text-[15px] font-semibold transition-colors ${
-                      isChildActive ? 'text-[#FD9800]' : 'text-[#0F172A] hover:text-[#FD9800]'
-                    }`}
-                    onClick={() => setOpenDropdown((prev) => !prev)}
-                    aria-expanded={openDropdown}
-                  >
-                    <span>{link.label}</span>
-                    <ChevronDown
-                      size={18}
-                      className={`transition-transform duration-200 ${
-                        openDropdown ? 'rotate-180 text-[#FD9800]' : 'text-gray-400'
-                      }`}
-                    />
-                  </button>
-
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      openDropdown ? 'max-h-40 opacity-100 pl-4 pb-2 space-y-1' : 'max-h-0 opacity-0'
-                    }`}
-                  >
-                    {link.dropdown.map((item) => (
-                      <NavLink
-                        key={item.path}
-                        to={item.path}
-                        onClick={onClose}
-                        className={({ isActive }) =>
-                          `block py-2.5 text-[14px] font-medium transition-colors ${
-                            isActive
-                              ? 'text-[#FD9800] font-bold pl-2 border-l-2 border-[#FD9800]'
-                              : 'text-[#454F5E] hover:text-[#FD9800]'
-                          }`
-                        }
-                      >
-                        {item.label}
-                      </NavLink>
-                    ))}
-                  </div>
-                </div>
+                <NavLink
+                  key={link.path}
+                  to={link.path}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    `block py-3 border-b border-gray-100 text-[15px] font-semibold transition-colors ${
+                      isActive ? 'text-[#FD9800]' : 'text-[#0F172A] hover:text-[#FD9800]'
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
               )
-            }
+            })}
+          </nav>
 
-            return (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `block py-3.5 border-b border-gray-100 text-[15px] font-semibold transition-colors ${
-                    isActive ? 'text-[#FD9800]' : 'text-[#0F172A] hover:text-[#FD9800]'
-                  }`
-                }
-              >
-                {link.label}
-              </NavLink>
-            )
-          })}
-        </nav>
+          {/* Donate CTA & Social Links - Brought Up Directly Below Links */}
+          <div className="mt-5 pt-5 border-t border-gray-100 space-y-3.5">
+            <Link
+              to="/donate"
+              onClick={onClose}
+              className="w-full flex items-center justify-center gap-2 bg-[#FD9800] hover:bg-[#E98C00] text-[#FEF9E1] font-semibold text-[13px] uppercase tracking-[2px] py-3.5 shadow-sm transition-colors active:scale-98"
+            >
+              <Heart size={16} fill="currentColor" />
+              <span>Donate</span>
+            </Link>
 
-        {/* Drawer Footer: Donate CTA & Social Links */}
-        <div className="p-6 border-t border-gray-100 bg-[#FAF9F5] space-y-4">
-          <Link
-            to="/donate"
-            onClick={onClose}
-            className="w-full flex items-center justify-center gap-2 bg-[#FD9800] hover:bg-[#E98C00] text-[#FEF9E1] font-semibold text-[13px] uppercase tracking-[2px] py-3.5 shadow-sm transition-colors"
-          >
-            <Heart size={16} fill="currentColor" />
-            <span>Donate</span>
-          </Link>
-
-          {/* Social Icons in mobile menu */}
-          <div className="flex items-center justify-center gap-3 pt-2">
-            {socialLinks.map((s) => (
-              <a
-                key={s.label}
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="w-9 h-9 rounded-full bg-white border border-gray-200 hover:border-[#FD9800] flex items-center justify-center transition-colors shadow-xs"
-              >
-                <img
-                  src={socialIconMap[s.label]}
-                  alt={s.label}
-                  className="w-4 h-4 object-contain"
-                />
-              </a>
-            ))}
+            {/* Social Icons */}
+            <div className="flex items-center justify-center gap-3 pt-1">
+              {socialLinks.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="w-9 h-9 rounded-full bg-white border border-gray-200 hover:border-[#FD9800] flex items-center justify-center transition-colors shadow-xs"
+                >
+                  <img
+                    src={socialIconMap[s.label]}
+                    alt={s.label}
+                    className="w-4 h-4 object-contain"
+                  />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

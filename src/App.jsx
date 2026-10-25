@@ -10,6 +10,7 @@ import Events from './pages/Events'
 import Connect from './pages/Connect'
 import Testimonies from './pages/Testimonies'
 import Prayer from './pages/Prayer'
+import TellStory from './pages/TellStory'
 import Contact from './pages/Contact'
 import Donate from './pages/Donate'
 import NotFound from './pages/NotFound'
@@ -80,6 +81,9 @@ export default function App() {
                 <Route path="/testimonies" element={<Testimonies />} />
                 <Route path="/prayer" element={<Prayer />} />
                 <Route path="/lets-pray-with-you" element={<Prayer />} />
+                <Route path="/tell-us-your-story" element={<TellStory />} />
+                <Route path="/tell-story" element={<TellStory />} />
+                <Route path="/share-your-story" element={<TellStory />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/donate" element={<Donate />} />
                 <Route path="*" element={<NotFound />} />

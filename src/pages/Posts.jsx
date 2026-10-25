@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { CalendarDays, ArrowRight, Clock, User, Sparkles } from 'lucide-react'
+import { CalendarDays, ArrowRight, Clock, User, Sparkles, Heart } from 'lucide-react'
 import Seo from '../components/common/Seo'
 import CTASection from '../components/home/CTASection'
 import { posts as staticPosts } from '../data/posts'
@@ -118,17 +118,24 @@ export default function Posts() {
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-100">
+                  <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                     <Link
                       to={`/posts/${post.slug}`}
-                      className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[1.5px] text-[#FD9800] group-hover:text-[#E98C00] transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[1.5px] text-[#FD9800] group-hover:text-[#E98C00] transition-colors"
                     >
-                      Read Full Article
+                      <span>Read Article</span>
                       <ArrowRight
-                        size={15}
+                        size={14}
                         className="group-hover:translate-x-1.5 transition-transform"
                       />
                     </Link>
+
+                    <div className="flex items-center gap-3 text-xs text-[#64748B] font-medium">
+                      <span className="flex items-center gap-1 hover:text-rose-600 transition-colors">
+                        <Heart size={14} />
+                        <span>{post.likes ?? (post.id ? 14 + (post.id * 7) % 35 : 18)}</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </article>
