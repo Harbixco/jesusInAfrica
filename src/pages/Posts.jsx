@@ -9,6 +9,7 @@ import api from '../utils/api'
 
 export default function Posts() {
   const [postsList, setPostsList] = useState(staticPosts)
+  const [selectedCategory, setSelectedCategory] = useState('All')
 
   useEffect(() => {
     const fetchLivePosts = async () => {
@@ -25,11 +26,21 @@ export default function Posts() {
     fetchLivePosts()
   }, [])
 
+  // Extract unique categories from posts list
+  const categories = ['All', ...new Set(postsList.map((p) => p.category).filter(Boolean))]
+
+  const displayedPosts =
+    selectedCategory === 'All'
+      ? postsList
+      : postsList.filter(
+          (p) => p.category?.toLowerCase() === selectedCategory.toLowerCase()
+        )
+
   return (
     <>
       <Seo
-        title="Conference Blogs & Recaps - Jesus in Africa (JIA)"
-        description="Experience the miraculous encounters, deep teachings, and revival testimonies from the Ogun State Supernatural Conference and Jesus in Africa ministry."
+        title="Blogs - Jesus in Africa (JIA)"
+        description="Discover inspiring teachings, ministry updates, supernatural encounters, and faith-building articles from Jesus in Africa."
       />
 
       {/* Hero Header Banner */}
@@ -45,13 +56,13 @@ export default function Posts() {
         <div className="w-full max-w-[1240px] mx-auto px-6 sm:px-8 lg:px-12 relative z-10 py-12 md:py-16">
           <div className="inline-flex items-center gap-2 bg-[#FD9800]/20 border border-[#FD9800]/40 text-[#FD9800] px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-[2px] mb-4">
             <Sparkles size={14} />
-            <span>Inspiring Encounters &amp; Recaps</span>
+            <span>Ministry Insights &amp; Updates</span>
           </div>
           <h1 className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-white mb-4 drop-shadow-md">
-            Conference Blogs
+            Blogs
           </h1>
           <p className="font-body text-base sm:text-lg text-white/80 max-w-2xl leading-relaxed">
-            Witness how the fire of God touched hearts, broke yokes, and empowered believers at the landmark Ogun State Supernatural Conference.
+            Welcome to the official Jesus in Africa blog, your destination for faith-building teachings, ministry updates, powerful revival reports, and miraculous testimonies from across the nations.
           </p>
         </div>
       </section>
@@ -59,8 +70,31 @@ export default function Posts() {
       {/* Posts List */}
       <section className="py-12 lg:py-20 bg-[#F8FAFC]">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Category Filter Pills (shows all categories including Healing Room) */}
+          {categories.length > 2 && (
+            <div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-gray-200">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] mr-2">
+                Filter by Topic:
+              </span>
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    selectedCategory.toLowerCase() === cat.toLowerCase()
+                      ? 'bg-[#FD9800] text-slate-950 shadow-sm'
+                      : 'bg-white text-[#454F5E] hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            {postsList.map((post) => (
+            {displayedPosts.map((post) => (
               <article
                 key={post._id || post.id || post.slug}
                 className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group overflow-hidden hover:-translate-y-1"

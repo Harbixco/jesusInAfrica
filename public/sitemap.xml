@@ -60,6 +60,14 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Healing Room -->
+  <url>
+    <loc>https://www.jesusinafrica.org/healing-room</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
   <!-- Testimonies of Healing & Miracles -->
   <url>
     <loc>https://www.jesusinafrica.org/testimonies</loc>

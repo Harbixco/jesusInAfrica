@@ -18,6 +18,9 @@ import {
   Loader2,
   ArrowUp,
   ArrowDown,
+  Calendar,
+  CalendarClock,
+  Clock,
 } from 'lucide-react'
 import api from '../../utils/api'
 import { compressImage } from '../../utils/imageOptimizer'
@@ -43,6 +46,12 @@ export default function AdminPostEditor() {
   const [excerpt, setExcerpt] = useState('')
   const [image, setImage] = useState('')
   const [status, setStatus] = useState('published')
+  const [scheduledAt, setScheduledAt] = useState(() => {
+    const d = new Date()
+    d.setDate(d.getDate() + 1)
+    d.setHours(9, 0, 0, 0)
+    return d.toISOString().slice(0, 16)
+  })
   const [featured, setFeatured] = useState(false)
 
   // Event Gallery State (Multi-Image)
@@ -100,6 +109,13 @@ export default function AdminPostEditor() {
           setExcerpt(p.excerpt || '')
           setImage(p.image || '')
           setStatus(p.status || 'published')
+          if (p.scheduledAt) {
+            try {
+              setScheduledAt(new Date(p.scheduledAt).toISOString().slice(0, 16))
+            } catch {
+              // ignore
+            }
+          }
           setFeatured(Boolean(p.featured))
           if (Array.isArray(p.gallery) && p.gallery.length > 0) {
             setGallery(
@@ -300,6 +316,12 @@ export default function AdminPostEditor() {
       image: image.trim(),
       gallery: cleanGallery,
       status,
+      scheduledAt:
+        status === 'scheduled'
+          ? scheduledAt
+            ? new Date(scheduledAt).toISOString()
+            : new Date(Date.now() + 86400000).toISOString()
+          : null,
       featured,
       content:
         filteredContent.length > 0
@@ -311,10 +333,22 @@ export default function AdminPostEditor() {
       setSaving(true)
       if (isEditing) {
         await api.put(`/posts/${id}`, postPayload)
-        setSuccessMessage('Article updated successfully!')
+        setSuccessMessage(
+          status === 'scheduled'
+            ? 'Article scheduled successfully!'
+            : status === 'draft'
+            ? 'Draft saved successfully!'
+            : 'Article updated successfully!'
+        )
       } else {
         await api.post('/posts', postPayload)
-        setSuccessMessage('Article published successfully!')
+        setSuccessMessage(
+          status === 'scheduled'
+            ? 'Article scheduled successfully!'
+            : status === 'draft'
+            ? 'Draft saved successfully!'
+            : 'Article published successfully!'
+        )
       }
 
       setTimeout(() => {
@@ -330,6 +364,7 @@ export default function AdminPostEditor() {
 
   const categories = [
     'Recap',
+    'Healing Room',
     'Outreach',
     'Teaching',
     'Conference',
@@ -367,7 +402,7 @@ export default function AdminPostEditor() {
             <p className="text-slate-400 text-xs sm:text-sm mt-0.5">
               {isEditing
                 ? 'Update article details, media, and structured content.'
-                : 'Compose and publish a new post to the Jesus In Africa website.'}
+                : 'Compose, schedule, or publish a new post to the Jesus In Africa website.'}
             </p>
           </div>
         </div>
@@ -383,6 +418,16 @@ export default function AdminPostEditor() {
               <>
                 <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
                 <span>Saving...</span>
+              </>
+            ) : status === 'scheduled' ? (
+              <>
+                <CalendarClock size={16} />
+                <span>{isEditing ? 'Update Scheduled Post' : 'Schedule Post'}</span>
+              </>
+            ) : status === 'draft' ? (
+              <>
+                <Save size={16} />
+                <span>Save as Draft</span>
               </>
             ) : (
               <>
@@ -931,24 +976,19 @@ export default function AdminPostEditor() {
           </div>
         </div>
 
-        {/* Card 4: Publishing Status */}
-        <div className="bg-[#0F172A] border border-slate-800 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-6">
+        {/* Card 4: Publishing & Schedule Status */}
+        <div className="bg-[#0F172A] border border-slate-800 rounded-2xl p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800/80 pb-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                Publication Status
-              </label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-semibold focus:outline-none focus:border-[#FD9800]"
-              >
-                <option value="published">Published (Visible to all)</option>
-                <option value="draft">Draft (Hidden from public)</option>
-              </select>
+              <h2 className="font-heading font-bold text-lg text-white">
+                Publication &amp; Scheduling
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Publish immediately, schedule for a future date &amp; time, or save as a draft.
+              </p>
             </div>
 
-            <div className="flex items-center gap-2 pt-4">
+            <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 id="featuredToggle"
@@ -957,25 +997,86 @@ export default function AdminPostEditor() {
                 className="w-4 h-4 rounded text-[#FD9800] bg-slate-900 border-slate-700 focus:ring-0"
               />
               <label htmlFor="featuredToggle" className="text-xs font-medium text-slate-300">
-                Mark as Featured
+                Mark as Featured Article
               </label>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-start">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                Publication Status
+              </label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-semibold focus:outline-none focus:border-[#FD9800]"
+              >
+                <option value="published">Publish Now (Visible to public immediately)</option>
+                <option value="scheduled">Schedule Post (Publish automatically at specified time)</option>
+                <option value="draft">Draft (Private, hidden from website)</option>
+              </select>
+            </div>
+
+            {status === 'scheduled' && (
+              <div className="bg-slate-900/90 border border-sky-500/30 rounded-xl p-4 space-y-3">
+                <div className="flex items-center gap-2 text-sky-400 text-xs font-bold uppercase tracking-wider">
+                  <CalendarClock size={16} />
+                  <span>Set Schedule Date &amp; Time</span>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                    Scheduled Publication Date &amp; Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    value={scheduledAt}
+                    onChange={(e) => setScheduledAt(e.target.value)}
+                    min={new Date().toISOString().slice(0, 16)}
+                    className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-[#FD9800]"
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  The article will remain hidden from the public and will automatically go live when the scheduled time arrives.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between pt-4 border-t border-slate-800/80">
             <Link
               to="/admin/posts"
               className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors"
             >
               Cancel
             </Link>
+
             <button
               type="submit"
               disabled={saving}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FD9800] hover:bg-[#E98C00] text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/20 transition-all duration-200 disabled:opacity-50"
             >
-              <Save size={16} />
-              <span>{isEditing ? 'Update Article' : 'Publish Article'}</span>
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                  <span>Saving...</span>
+                </>
+              ) : status === 'scheduled' ? (
+                <>
+                  <CalendarClock size={16} />
+                  <span>{isEditing ? 'Update Scheduled Post' : 'Schedule Post'}</span>
+                </>
+              ) : status === 'draft' ? (
+                <>
+                  <Save size={16} />
+                  <span>Save as Draft</span>
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  <span>{isEditing ? 'Update Article' : 'Publish Article'}</span>
+                </>
+              )}
             </button>
           </div>
         </div>

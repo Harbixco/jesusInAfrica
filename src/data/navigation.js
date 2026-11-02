@@ -7,6 +7,7 @@ export const navLinks = [
     label: 'Connect',
     path: '/connect',
     dropdown: [
+      { label: 'Healing Room', path: '/healing-room' },
       { label: 'Testimonies', path: '/testimonies' },
       { label: "Let's Pray With You", path: '/prayer' },
       { label: 'Tell Us Your Story', path: '/tell-us-your-story' },

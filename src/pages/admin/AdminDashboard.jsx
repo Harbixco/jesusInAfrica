@@ -4,6 +4,7 @@ import {
   FileText,
   CheckCircle2,
   Clock,
+  CalendarClock,
   Eye,
   PlusCircle,
   ExternalLink,
@@ -85,76 +86,94 @@ export default function AdminDashboard() {
       )}
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
         {/* Total Posts */}
-        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-6 relative overflow-hidden group hover:border-slate-700 transition-all">
+        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Total Articles
             </span>
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-[#FD9800] flex items-center justify-center">
-              <FileText size={20} />
+            <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-[#FD9800] flex items-center justify-center">
+              <FileText size={18} />
             </div>
           </div>
-          <div className="mt-4">
-            <div className="font-heading font-bold text-3xl sm:text-4xl text-white">
+          <div className="mt-3">
+            <div className="font-heading font-bold text-2xl sm:text-3xl text-white">
               {loading ? '...' : stats?.totalPosts ?? 0}
             </div>
-            <p className="text-xs text-slate-400 mt-1">Stored in MongoDB</p>
+            <p className="text-[11px] text-slate-400 mt-1">Stored in MongoDB</p>
           </div>
         </div>
 
         {/* Published */}
-        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-6 relative overflow-hidden group hover:border-slate-700 transition-all">
+        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               Published Live
             </span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-              <CheckCircle2 size={20} />
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <CheckCircle2 size={18} />
             </div>
           </div>
-          <div className="mt-4">
-            <div className="font-heading font-bold text-3xl sm:text-4xl text-white">
+          <div className="mt-3">
+            <div className="font-heading font-bold text-2xl sm:text-3xl text-white">
               {loading ? '...' : stats?.publishedPosts ?? 0}
             </div>
-            <p className="text-xs text-emerald-400/80 mt-1">Live on website</p>
+            <p className="text-[11px] text-emerald-400/80 mt-1">Live on website</p>
+          </div>
+        </div>
+
+        {/* Scheduled */}
+        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Scheduled
+            </span>
+            <div className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 flex items-center justify-center">
+              <CalendarClock size={18} />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="font-heading font-bold text-2xl sm:text-3xl text-white">
+              {loading ? '...' : stats?.scheduledPosts ?? 0}
+            </div>
+            <p className="text-[11px] text-sky-400/80 mt-1">Future publication</p>
           </div>
         </div>
 
         {/* Drafts */}
-        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-6 relative overflow-hidden group hover:border-slate-700 transition-all">
+        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Drafts &amp; Queued
+              Drafts
             </span>
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
-              <Clock size={20} />
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+              <Clock size={18} />
             </div>
           </div>
-          <div className="mt-4">
-            <div className="font-heading font-bold text-3xl sm:text-4xl text-white">
+          <div className="mt-3">
+            <div className="font-heading font-bold text-2xl sm:text-3xl text-white">
               {loading ? '...' : stats?.draftPosts ?? 0}
             </div>
-            <p className="text-xs text-slate-400 mt-1">In progress</p>
+            <p className="text-[11px] text-slate-400 mt-1">In progress</p>
           </div>
         </div>
 
         {/* Total Views */}
-        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-6 relative overflow-hidden group hover:border-slate-700 transition-all">
+        <div className="bg-[#0F172A] border border-slate-800/90 rounded-2xl p-5 relative overflow-hidden group hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Total Article Views
+              Total Views
             </span>
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-              <Eye size={20} />
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+              <Eye size={18} />
             </div>
           </div>
-          <div className="mt-4">
-            <div className="font-heading font-bold text-3xl sm:text-4xl text-white">
+          <div className="mt-3">
+            <div className="font-heading font-bold text-2xl sm:text-3xl text-white">
               {loading ? '...' : stats?.totalViews ?? 0}
             </div>
-            <p className="text-xs text-slate-400 mt-1">Reader engagements</p>
+            <p className="text-[11px] text-slate-400 mt-1">Across all posts</p>
           </div>
         </div>
       </div>

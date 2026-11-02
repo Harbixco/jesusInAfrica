@@ -1,9 +1,17 @@
-import { MessageCircleHeart, HeartHandshake, ArrowRight, MessageSquareQuote } from 'lucide-react'
+import { MessageCircleHeart, HeartHandshake, ArrowRight, MessageSquareQuote, HeartPulse } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Seo from '../components/common/Seo'
 import CTASection from '../components/home/CTASection'
 
 const links = [
+  {
+    icon: HeartPulse,
+    title: 'Healing Room',
+    description:
+      'Experience the healing power of Jesus Christ. Explore biblical teachings on divine health, miraculous restorations, and life-changing faith articles.',
+    to: '/healing-room',
+    cta: 'Enter Healing Room',
+  },
   {
     icon: MessageCircleHeart,
     title: 'Testimonies',
@@ -54,7 +62,7 @@ export default function Connect() {
       {/* Main Options */}
       <section className="py-20 lg:py-24 bg-white">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             {links.map((item) => {
               const Icon = item.icon
               return (

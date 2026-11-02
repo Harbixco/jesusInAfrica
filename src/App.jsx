@@ -8,6 +8,7 @@ import Posts from './pages/Posts'
 import PostDetail from './pages/PostDetail'
 import Events from './pages/Events'
 import Connect from './pages/Connect'
+import HealingRoom from './pages/HealingRoom'
 import Testimonies from './pages/Testimonies'
 import Prayer from './pages/Prayer'
 import TellStory from './pages/TellStory'
@@ -78,6 +79,8 @@ export default function App() {
                 <Route path="/blogs/:slug" element={<PostDetail />} />
                 <Route path="/events" element={<Events />} />
                 <Route path="/connect" element={<Connect />} />
+                <Route path="/healing-room" element={<HealingRoom />} />
+                <Route path="/healing" element={<HealingRoom />} />
                 <Route path="/testimonies" element={<Testimonies />} />
                 <Route path="/prayer" element={<Prayer />} />
                 <Route path="/lets-pray-with-you" element={<Prayer />} />

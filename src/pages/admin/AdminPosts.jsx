@@ -8,6 +8,8 @@ import {
   ExternalLink,
   Eye,
   Calendar,
+  CalendarClock,
+  Clock,
   AlertTriangle,
   RefreshCw,
   Filter,
@@ -117,7 +119,7 @@ export default function AdminPosts() {
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           {/* Status Tabs */}
           <div className="inline-flex rounded-xl bg-slate-900 p-1 border border-slate-800">
-            {['all', 'published', 'draft'].map((status) => (
+            {['all', 'published', 'scheduled', 'draft'].map((status) => (
               <button
                 key={status}
                 type="button"
@@ -246,15 +248,36 @@ export default function AdminPosts() {
 
                     {/* Status */}
                     <td className="py-4 px-4 whitespace-nowrap">
-                      <span
-                        className={`inline-block px-2.5 py-1 rounded-md text-xs font-semibold capitalize ${
-                          post.status === 'published'
-                            ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/20'
-                            : 'bg-amber-950/60 text-amber-400 border border-amber-500/20'
-                        }`}
-                      >
-                        {post.status || 'published'}
-                      </span>
+                      {post.status === 'scheduled' ? (
+                        <div className="flex flex-col gap-1">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-950/60 text-sky-400 border border-sky-500/25 w-fit">
+                            <CalendarClock size={13} />
+                            <span>Scheduled</span>
+                          </span>
+                          {post.scheduledAt && (
+                            <span className="text-[11px] text-slate-400 font-mono">
+                              {new Date(post.scheduledAt).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                              })}{' '}
+                              {new Date(post.scheduledAt).toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <span
+                          className={`inline-block px-2.5 py-1 rounded-md text-xs font-semibold capitalize ${
+                            post.status === 'published'
+                              ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-500/20'
+                              : 'bg-amber-950/60 text-amber-400 border border-amber-500/20'
+                          }`}
+                        >
+                          {post.status || 'published'}
+                        </span>
+                      )}
                     </td>
 
                     {/* Views */}

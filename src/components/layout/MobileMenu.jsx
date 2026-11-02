@@ -24,6 +24,7 @@ export default function MobileMenu({ open, isOpen, onClose }) {
 
   // Auto-expand dropdown if user is on one of its subpages
   const isConnectSubpage =
+    location.pathname === '/healing-room' ||
     location.pathname === '/testimonies' ||
     location.pathname === '/prayer' ||
     location.pathname === '/tell-us-your-story' ||
