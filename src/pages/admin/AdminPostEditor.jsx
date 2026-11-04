@@ -21,9 +21,12 @@ import {
   Calendar,
   CalendarClock,
   Clock,
+  FileText,
+  LayoutGrid,
 } from 'lucide-react'
 import api from '../../utils/api'
 import { compressImage } from '../../utils/imageOptimizer'
+import WordEditor from '../../components/admin/WordEditor'
 
 export default function AdminPostEditor() {
   const { id } = useParams()
@@ -64,6 +67,95 @@ export default function AdminPostEditor() {
     { type: 'paragraph', text: '', url: '', author: '' },
   ])
   const [uploadingBlockIndex, setUploadingBlockIndex] = useState(null)
+
+  // Microsoft Word Editor State
+  const [editorMode, setEditorMode] = useState('word') // 'word' | 'blocks'
+  const [docHtml, setDocHtml] = useState('')
+
+  // Convert array of blocks to rich HTML
+  const synthesizeHtmlFromBlocks = (blocks) => {
+    if (!Array.isArray(blocks) || blocks.length === 0) return ''
+    return blocks
+      .map((b) => {
+        if (b.type === 'heading') return `<h2>${b.text}</h2>`
+        if (b.type === 'quote') {
+          return `<blockquote style="margin: 1.5rem 0; padding: 1rem 1.25rem; background-color: rgba(253, 152, 0, 0.08); border-left: 4px solid #FD9800; border-radius: 4px;"><p>${b.text}</p>${b.author ? `<cite style="display:block; margin-top:0.5rem; font-weight:bold; color:#FD9800;">— ${b.author}</cite>` : ''}</blockquote>`
+        }
+        if (b.type === 'image') {
+          return `<figure style="margin: 1.75rem 0; text-align: center;"><img src="${b.url || b.src || ''}" alt="${b.caption || b.text || ''}" style="max-width: 100%; border-radius: 8px;" />${b.caption || b.text ? `<figcaption style="margin-top: 0.5rem; font-size: 0.85rem; color: #94A3B8;">${b.caption || b.text}</figcaption>` : ''}</figure>`
+        }
+        return `<p>${b.text}</p>`
+      })
+      .join('\n')
+  }
+
+  // Convert rich HTML to content blocks
+  const htmlToBlocks = (html) => {
+    if (!html || !html.trim()) return []
+    try {
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(html, 'text/html')
+      const blocks = []
+
+      Array.from(doc.body.children).forEach((node) => {
+        const tagName = node.tagName.toLowerCase()
+        if (tagName === 'h1' || tagName === 'h2' || tagName === 'h3') {
+          blocks.push({ type: 'heading', text: node.innerText || node.textContent || '' })
+        } else if (tagName === 'blockquote') {
+          const cite = node.querySelector('cite')
+          const citeText = cite ? (cite.innerText || cite.textContent || '').replace(/^—\s*/, '') : ''
+          const clone = node.cloneNode(true)
+          const cloneCite = clone.querySelector('cite')
+          if (cloneCite) cloneCite.remove()
+          blocks.push({
+            type: 'quote',
+            text: (clone.innerText || clone.textContent || '').trim(),
+            author: citeText,
+          })
+        } else if (tagName === 'figure') {
+          const img = node.querySelector('img')
+          const figcaption = node.querySelector('figcaption')
+          if (img && img.src) {
+            blocks.push({
+              type: 'image',
+              url: img.src,
+              caption: figcaption ? (figcaption.innerText || figcaption.textContent || '') : '',
+              text: figcaption ? (figcaption.innerText || figcaption.textContent || '') : '',
+            })
+          }
+        } else {
+          const innerHtml = node.innerHTML.trim()
+          if (innerHtml && innerHtml !== '<br>') {
+            blocks.push({ type: 'paragraph', text: innerHtml })
+          }
+        }
+      })
+
+      if (blocks.length === 0 && doc.body.innerHTML.trim()) {
+        blocks.push({ type: 'paragraph', text: doc.body.innerHTML.trim() })
+      }
+      return blocks
+    } catch {
+      return [{ type: 'paragraph', text: html }]
+    }
+  }
+
+  // Switch between Word mode and Modular Blocks mode seamlessly
+  const handleSwitchMode = (newMode) => {
+    if (newMode === editorMode) return
+    if (newMode === 'blocks') {
+      const converted = htmlToBlocks(docHtml)
+      if (converted.length > 0) {
+        setContentBlocks(converted)
+      }
+    } else {
+      const convertedHtml = synthesizeHtmlFromBlocks(contentBlocks)
+      if (convertedHtml) {
+        setDocHtml(convertedHtml)
+      }
+    }
+    setEditorMode(newMode)
+  }
 
   // UI State
   const [loading, setLoading] = useState(isEditing)
@@ -139,6 +231,12 @@ export default function AdminPostEditor() {
             )
           } else {
             setContentBlocks([{ type: 'paragraph', text: '', url: '', author: '' }])
+          }
+
+          if (p.rawContent) {
+            setDocHtml(p.rawContent)
+          } else if (Array.isArray(p.content) && p.content.length > 0) {
+            setDocHtml(synthesizeHtmlFromBlocks(p.content))
           }
         }
       } catch (err) {
@@ -306,6 +404,9 @@ export default function AdminPostEditor() {
       }))
       .filter((g) => g.src.length > 0)
 
+    const finalHtml = editorMode === 'word' ? docHtml : synthesizeHtmlFromBlocks(filteredContent)
+    const finalBlocks = editorMode === 'word' ? htmlToBlocks(docHtml) : filteredContent
+
     const postPayload = {
       title: title.trim(),
       slug: slug.trim() || slugify(title),
@@ -323,9 +424,10 @@ export default function AdminPostEditor() {
             : new Date(Date.now() + 86400000).toISOString()
           : null,
       featured,
+      rawContent: finalHtml,
       content:
-        filteredContent.length > 0
-          ? filteredContent
+        finalBlocks.length > 0
+          ? finalBlocks
           : [{ type: 'paragraph', text: excerpt }],
     }
 
@@ -792,188 +894,313 @@ export default function AdminPostEditor() {
           )}
         </div>
 
-        {/* Card 3: Structured Content Builder */}
-        <div className="bg-[#0F172A] border border-slate-800 rounded-2xl p-6 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800/80 pb-3">
+        {/* Card 3: Microsoft Word & Structured Content Editor */}
+        <div className="bg-[#0F172A] border border-slate-800 rounded-2xl p-6 space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800/80 pb-4">
             <div>
-              <h2 className="font-heading font-bold text-lg text-white">
-                Article Body Content
-              </h2>
-              <p className="text-xs text-slate-400">
-                Build your article with paragraphs, subheadings, scriptures, and inline photos.
+              <div className="flex items-center gap-2">
+                <h2 className="font-heading font-bold text-lg text-white">
+                  Article Body Content
+                </h2>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FD9800]/20 text-[#FD9800] text-[11px] font-bold tracking-wide">
+                  <Sparkles size={12} />
+                  <span>Microsoft Word Features Active</span>
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-1">
+                Compose, format, and edit with rich styling (Bold, Italics, Underline, Headings, Lists, Colors, Links, Scripture quotes).
               </p>
             </div>
 
-            {/* Quick Add block buttons */}
-            <div className="flex items-center flex-wrap gap-1.5">
+            {/* Mode Switcher Tabs */}
+            <div className="inline-flex rounded-xl bg-slate-900 p-1 border border-slate-800 shrink-0">
               <button
                 type="button"
-                onClick={() => addBlock('paragraph')}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+                onClick={() => handleSwitchMode('word')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  editorMode === 'word'
+                    ? 'bg-[#FD9800] text-slate-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
               >
-                <Type size={13} className="text-[#FD9800]" />
-                <span>+ Paragraph</span>
+                <FileText size={14} />
+                <span>Word Document Mode</span>
               </button>
+
               <button
                 type="button"
-                onClick={() => addBlock('heading')}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+                onClick={() => handleSwitchMode('blocks')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  editorMode === 'blocks'
+                    ? 'bg-[#FD9800] text-slate-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
               >
-                <Heading size={13} className="text-[#FD9800]" />
-                <span>+ Heading</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => addBlock('quote')}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
-              >
-                <Quote size={13} className="text-[#FD9800]" />
-                <span>+ Quote</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => addBlock('image')}
-                className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
-              >
-                <ImageIcon size={13} className="text-[#FD9800]" />
-                <span>+ Inline Image</span>
+                <LayoutGrid size={14} />
+                <span>Block Builder Mode</span>
               </button>
             </div>
           </div>
 
-          {/* Blocks List */}
-          <div className="space-y-4 pt-2">
-            {contentBlocks.map((block, index) => (
-              <div
-                key={index}
-                className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-3 relative group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#FD9800]">
-                      #{index + 1} {block.type === 'image' ? 'Inline Image' : block.type}
-                    </span>
-                    <select
-                      value={block.type}
-                      onChange={(e) => updateBlock(index, 'type', e.target.value)}
-                      className="py-1 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs focus:outline-none"
-                    >
-                      <option value="paragraph">Paragraph</option>
-                      <option value="heading">Subheading</option>
-                      <option value="quote">Scripture / Quote</option>
-                      <option value="image">Inline Image / Photo</option>
-                    </select>
-                  </div>
-
+          {/* Mode 1: Microsoft Word Document Editor */}
+          {editorMode === 'word' ? (
+            <div className="space-y-3">
+              <WordEditor
+                value={docHtml}
+                onChange={setDocHtml}
+                placeholder="Start typing your blog article here with Microsoft Word features (Bold, Italics, Underline, Lists, Headings, Colors, Quotes, Images)..."
+                minHeight="460px"
+              />
+              <p className="text-[11px] text-slate-400 italic">
+                Tip: You can paste directly from Microsoft Word, Google Docs, or type freely. Text formatting, bold, italics, underlines, and lists will be rendered for website readers.
+              </p>
+            </div>
+          ) : (
+            /* Mode 2: Modular Block Builder Mode */
+            <div className="space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2 pb-2">
+                <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                  Blocks List ({contentBlocks.length})
+                </span>
+                <div className="flex items-center flex-wrap gap-1.5">
                   <button
                     type="button"
-                    onClick={() => removeBlock(index)}
-                    title="Remove block"
-                    className="p-1 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                    onClick={() => addBlock('paragraph')}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
                   >
-                    <Trash2 size={14} />
+                    <Type size={13} className="text-[#FD9800]" />
+                    <span>+ Paragraph</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => addBlock('heading')}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+                  >
+                    <Heading size={13} className="text-[#FD9800]" />
+                    <span>+ Heading</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => addBlock('quote')}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+                  >
+                    <Quote size={13} className="text-[#FD9800]" />
+                    <span>+ Quote</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => addBlock('image')}
+                    className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-colors flex items-center gap-1"
+                  >
+                    <ImageIcon size={13} className="text-[#FD9800]" />
+                    <span>+ Inline Image</span>
                   </button>
                 </div>
+              </div>
 
-                {block.type === 'heading' ? (
-                  <input
-                    type="text"
-                    value={block.text || ''}
-                    onChange={(e) => updateBlock(index, 'text', e.target.value)}
-                    placeholder="Enter subheading text..."
-                    className="w-full px-3.5 py-2 bg-[#080E1A] border border-slate-700/80 rounded-lg text-white font-heading font-semibold text-sm focus:outline-none focus:border-[#FD9800]"
-                  />
-                ) : block.type === 'quote' ? (
-                  <div className="space-y-2">
-                    <textarea
-                      rows={2}
-                      value={block.text || ''}
-                      onChange={(e) => updateBlock(index, 'text', e.target.value)}
-                      placeholder="“For the kingdom of God is not in word, but in power.” — 1 Cor 4:20"
-                      className="w-full px-3.5 py-2 bg-[#080E1A] border border-slate-700/80 rounded-lg text-amber-200 text-xs italic focus:outline-none focus:border-[#FD9800]"
-                    />
-                    <input
-                      type="text"
-                      value={block.author || ''}
-                      onChange={(e) => updateBlock(index, 'author', e.target.value)}
-                      placeholder="Quote attribution (e.g. 1 Corinthians 4:20 or Prophet Oludamola)"
-                      className="w-full px-3 py-1.5 bg-[#080E1A] border border-slate-700/80 rounded-lg text-slate-400 text-xs focus:outline-none focus:border-[#FD9800]"
-                    />
-                  </div>
-                ) : block.type === 'image' ? (
-                  <div className="space-y-3 bg-[#080E1A] p-3 rounded-xl border border-slate-700/60">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
-                      <div className="space-y-2">
-                        <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                          Image Source URL or File
-                        </label>
-                        <input
-                          type="text"
-                          value={block.url || ''}
-                          onChange={(e) => updateBlock(index, 'url', e.target.value)}
-                          placeholder="https://... or choose file"
-                          className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-[#FD9800]"
-                        />
-                        <div className="flex items-center gap-2">
-                          <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 cursor-pointer border border-slate-700/60">
-                            <Upload size={13} className={uploadingBlockIndex === index ? 'animate-bounce text-[#FD9800]' : ''} />
-                            <span>{uploadingBlockIndex === index ? 'Uploading...' : 'Choose File'}</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const f = e.target.files?.[0]
-                                if (f) handleBlockImageUpload(index, f)
-                              }}
-                              className="hidden"
-                              disabled={uploadingBlockIndex === index}
-                            />
-                          </label>
-                        </div>
+              {/* Blocks List */}
+              <div className="space-y-4 pt-1">
+                {contentBlocks.map((block, index) => (
+                  <div
+                    key={index}
+                    className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-3 relative group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#FD9800]">
+                          #{index + 1} {block.type === 'image' ? 'Inline Image' : block.type}
+                        </span>
+                        <select
+                          value={block.type}
+                          onChange={(e) => updateBlock(index, 'type', e.target.value)}
+                          className="py-1 px-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 text-xs focus:outline-none"
+                        >
+                          <option value="paragraph">Paragraph</option>
+                          <option value="heading">Subheading</option>
+                          <option value="quote">Scripture / Quote</option>
+                          <option value="image">Inline Image / Photo</option>
+                        </select>
                       </div>
 
-                      {/* Mini Preview */}
-                      <div className="h-28 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden">
-                        {block.url ? (
-                          <img
-                            src={block.url}
-                            alt="Block preview"
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.target.style.display = 'none'
-                            }}
-                          />
-                        ) : (
-                          <span className="text-[11px] text-slate-600">No image selected</span>
-                        )}
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeBlock(index)}
+                        title="Remove block"
+                        className="p-1 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
 
-                    <div>
-                      <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                        Caption (Optional)
-                      </label>
+                    {block.type === 'heading' ? (
                       <input
                         type="text"
                         value={block.text || ''}
                         onChange={(e) => updateBlock(index, 'text', e.target.value)}
-                        placeholder="Caption displayed below the image in the article..."
-                        className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-slate-300 text-xs placeholder-slate-500 focus:outline-none focus:border-[#FD9800]"
+                        placeholder="Enter subheading text..."
+                        className="w-full px-3.5 py-2 bg-[#080E1A] border border-slate-700/80 rounded-lg text-white font-heading font-semibold text-sm focus:outline-none focus:border-[#FD9800]"
                       />
-                    </div>
+                    ) : block.type === 'quote' ? (
+                      <div className="space-y-2">
+                        <textarea
+                          rows={2}
+                          value={block.text || ''}
+                          onChange={(e) => updateBlock(index, 'text', e.target.value)}
+                          placeholder="“For the kingdom of God is not in word, but in power.” — 1 Cor 4:20"
+                          className="w-full px-3.5 py-2 bg-[#080E1A] border border-slate-700/80 rounded-lg text-amber-200 text-xs italic focus:outline-none focus:border-[#FD9800]"
+                        />
+                        <input
+                          type="text"
+                          value={block.author || ''}
+                          onChange={(e) => updateBlock(index, 'author', e.target.value)}
+                          placeholder="Quote attribution (e.g. 1 Corinthians 4:20 or Prophet Oludamola)"
+                          className="w-full px-3 py-1.5 bg-[#080E1A] border border-slate-700/80 rounded-lg text-slate-400 text-xs focus:outline-none focus:border-[#FD9800]"
+                        />
+                      </div>
+                    ) : block.type === 'image' ? (
+                      <div className="space-y-3 bg-[#080E1A] p-3 rounded-xl border border-slate-700/60">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                          <div className="space-y-2">
+                            <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                              Image Source URL or File
+                            </label>
+                            <input
+                              type="text"
+                              value={block.url || ''}
+                              onChange={(e) => updateBlock(index, 'url', e.target.value)}
+                              placeholder="https://... or choose file"
+                              className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-[#FD9800]"
+                            />
+                            <div className="flex items-center gap-2">
+                              <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 cursor-pointer border border-slate-700/60">
+                                <Upload size={13} className={uploadingBlockIndex === index ? 'animate-bounce text-[#FD9800]' : ''} />
+                                <span>{uploadingBlockIndex === index ? 'Uploading...' : 'Choose File'}</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const f = e.target.files?.[0]
+                                    if (f) handleBlockImageUpload(index, f)
+                                  }}
+                                  className="hidden"
+                                  disabled={uploadingBlockIndex === index}
+                                />
+                              </label>
+                            </div>
+                          </div>
+
+                          {/* Mini Preview */}
+                          <div className="h-28 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden">
+                            {block.url ? (
+                              <img
+                                src={block.url}
+                                alt="Block preview"
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.style.display = 'none'
+                                }}
+                              />
+                            ) : (
+                              <span className="text-[11px] text-slate-600">No image selected</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                            Caption (Optional)
+                          </label>
+                          <input
+                            type="text"
+                            value={block.text || ''}
+                            onChange={(e) => updateBlock(index, 'text', e.target.value)}
+                            placeholder="Caption displayed below the image in the article..."
+                            className="w-full px-3 py-1.5 bg-slate-900 border border-slate-700/80 rounded-lg text-slate-300 text-xs placeholder-slate-500 focus:outline-none focus:border-[#FD9800]"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      /* Rich paragraph editor with inline Word formatting buttons */
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-1 px-2 py-1 bg-slate-950 border border-slate-800 rounded-lg text-slate-400 text-xs">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mr-1">
+                            Word Formatting:
+                          </span>
+                          <button
+                            type="button"
+                            title="Wrap selection in Bold"
+                            onClick={() => {
+                              const sel = window.getSelection().toString()
+                              if (sel) {
+                                updateBlock(index, 'text', block.text.replace(sel, `<b>${sel}</b>`))
+                              } else {
+                                updateBlock(index, 'text', `${block.text || ''} <b>bold text</b>`)
+                              }
+                            }}
+                            className="p-1 rounded hover:bg-slate-800 hover:text-white font-bold"
+                          >
+                            <Bold size={13} />
+                          </button>
+                          <button
+                            type="button"
+                            title="Wrap selection in Italic"
+                            onClick={() => {
+                              const sel = window.getSelection().toString()
+                              if (sel) {
+                                updateBlock(index, 'text', block.text.replace(sel, `<i>${sel}</i>`))
+                              } else {
+                                updateBlock(index, 'text', `${block.text || ''} <i>italic text</i>`)
+                              }
+                            }}
+                            className="p-1 rounded hover:bg-slate-800 hover:text-white"
+                          >
+                            <Italic size={13} />
+                          </button>
+                          <button
+                            type="button"
+                            title="Wrap selection in Underline"
+                            onClick={() => {
+                              const sel = window.getSelection().toString()
+                              if (sel) {
+                                updateBlock(index, 'text', block.text.replace(sel, `<u>${sel}</u>`))
+                              } else {
+                                updateBlock(index, 'text', `${block.text || ''} <u>underlined text</u>`)
+                              }
+                            }}
+                            className="p-1 rounded hover:bg-slate-800 hover:text-white"
+                          >
+                            <Underline size={13} />
+                          </button>
+                          <button
+                            type="button"
+                            title="Add Link"
+                            onClick={() => {
+                              const url = prompt('Enter destination link URL (https://...):')
+                              if (url) {
+                                const sel = window.getSelection().toString() || 'link'
+                                updateBlock(index, 'text', `${block.text || ''} <a href="${url}">${sel}</a>`)
+                              }
+                            }}
+                            className="p-1 rounded hover:bg-slate-800 hover:text-[#FD9800]"
+                          >
+                            <LinkIcon size={13} />
+                          </button>
+                        </div>
+
+                        <textarea
+                          rows={4}
+                          value={block.text || ''}
+                          onChange={(e) => updateBlock(index, 'text', e.target.value)}
+                          placeholder="Write paragraph text (HTML tags like <b>bold</b>, <i>italic</i>, <u>underline</u> are supported)..."
+                          className="w-full px-3.5 py-2.5 bg-[#080E1A] border border-slate-700/80 rounded-lg text-slate-200 text-xs sm:text-sm leading-relaxed focus:outline-none focus:border-[#FD9800]"
+                        />
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <textarea
-                    rows={4}
-                    value={block.text || ''}
-                    onChange={(e) => updateBlock(index, 'text', e.target.value)}
-                    placeholder="Write your paragraph here..."
-                    className="w-full px-3.5 py-2.5 bg-[#080E1A] border border-slate-700/80 rounded-lg text-slate-200 text-xs sm:text-sm leading-relaxed focus:outline-none focus:border-[#FD9800]"
-                  />
-                )}
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Card 4: Publishing & Schedule Status */}

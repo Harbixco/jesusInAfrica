@@ -446,7 +446,7 @@ export default function PostDetail() {
           )}
 
           {/* Article Core Content Body (Medium Golden Width & Typography) */}
-          <div className="space-y-7 text-[#334155] font-body text-[17px] sm:text-[18.5px] leading-[1.85] pt-2">
+          <div className="space-y-7 text-[#334155] font-body text-[17px] sm:text-[18.5px] leading-[1.85] pt-2 article-rich-content">
             {post.content && post.content.length > 0 ? (
               post.content.map((block, idx) => {
                 if (block.type === 'heading') {
@@ -469,9 +469,10 @@ export default function PostDetail() {
                       <div className="w-8 h-8 text-[#FD9800]/40 mb-2">
                         <QuoteIcon size={26} />
                       </div>
-                      <p className="font-body text-[18px] sm:text-[20px] text-[#0F172A] italic font-medium leading-[1.7] mb-2">
-                        &ldquo;{block.text}&rdquo;
-                      </p>
+                      <div
+                        className="font-body text-[18px] sm:text-[20px] text-[#0F172A] italic font-medium leading-[1.7] mb-2"
+                        dangerouslySetInnerHTML={{ __html: `&ldquo;${block.text}&rdquo;` }}
+                      />
                       {block.author && (
                         <cite className="block text-xs uppercase tracking-[2px] text-[#FD9800] font-bold not-italic pt-2">
                           — {block.author}
@@ -504,13 +505,18 @@ export default function PostDetail() {
                 }
 
                 return (
-                  <p key={idx} className="leading-[1.85]">
-                    {block.text}
-                  </p>
+                  <div
+                    key={idx}
+                    className="leading-[1.85]"
+                    dangerouslySetInnerHTML={{ __html: block.text }}
+                  />
                 )
               })
             ) : (
-              <p className="leading-[1.85]">{post.rawContent || post.excerpt}</p>
+              <div
+                className="leading-[1.85] space-y-4"
+                dangerouslySetInnerHTML={{ __html: post.rawContent || post.excerpt }}
+              />
             )}
 
             {/* Medium-style section divider */}
