@@ -17,6 +17,7 @@ import CTASection from '../components/home/CTASection'
 import { posts as staticPosts } from '../data/posts'
 import { eventHealing } from '../assets/images'
 import api from '../utils/api'
+import { sortPostsLatestFirst } from '../utils/postUtils'
 
 export default function HealingRoom() {
   // Filter static posts initially for 'Healing Room' category (case-insensitive)
@@ -24,7 +25,7 @@ export default function HealingRoom() {
     (p) => p.category?.toLowerCase() === 'healing room'
   )
 
-  const [postsList, setPostsList] = useState(initialHealingPosts)
+  const [postsList, setPostsList] = useState(() => sortPostsLatestFirst(initialHealingPosts))
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export default function HealingRoom() {
             (p) => p.category?.toLowerCase() === 'healing room'
           )
           if (filtered.length > 0) {
-            setPostsList(filtered)
+            setPostsList(sortPostsLatestFirst(filtered))
           }
         }
       } catch (err) {

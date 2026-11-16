@@ -1,4 +1,4 @@
-export const posts = [
+const rawPosts = [
   {
     id: 1,
     slug: 'glorious-evening-ogun-state-supernatural-conference-2024',
@@ -436,3 +436,7 @@ export const posts = [
     ],
   },
 ]
+
+export const posts = [...rawPosts].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+)

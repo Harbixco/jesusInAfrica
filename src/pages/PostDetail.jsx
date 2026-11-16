@@ -22,6 +22,7 @@ import Seo from '../components/common/Seo'
 import CTASection from '../components/home/CTASection'
 import { posts as staticPosts } from '../data/posts'
 import api from '../utils/api'
+import { sortPostsLatestFirst } from '../utils/postUtils'
 
 export default function PostDetail() {
   const { slug } = useParams()
@@ -62,8 +63,24 @@ export default function PostDetail() {
     fetchPost()
   }, [slug])
 
+  const [allPosts, setAllPosts] = useState(() => sortPostsLatestFirst(staticPosts))
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const data = await api.get('/posts', { status: 'published' })
+        if (data.success && data.posts && data.posts.length > 0) {
+          setAllPosts(sortPostsLatestFirst(data.posts))
+        }
+      } catch {
+        // use static fallback
+      }
+    }
+    fetchAll()
+  }, [])
+
   const post = livePost
-  const posts = staticPosts
+  const posts = allPosts
 
   // Comments state with localStorage support
   const storageKey = `jia_comments_${post?._id || post?.id || 'default'}`
@@ -231,7 +248,9 @@ export default function PostDetail() {
     }
   }
 
-  const otherPosts = posts.filter((p) => (p.slug || String(p.id)) !== (post.slug || String(post.id)))
+  const otherPosts = sortPostsLatestFirst(
+    posts.filter((p) => (p.slug || String(p._id || p.id)) !== (post?.slug || String(post?._id || post?.id)))
+  )
 
   return (
     <>

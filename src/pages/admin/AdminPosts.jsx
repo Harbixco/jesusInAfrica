@@ -15,6 +15,7 @@ import {
   Filter,
 } from 'lucide-react'
 import api from '../../utils/api'
+import { sortPostsLatestFirst } from '../../utils/postUtils'
 
 export default function AdminPosts() {
   const [posts, setPosts] = useState([])
@@ -40,7 +41,7 @@ export default function AdminPosts() {
       }
       const data = await api.get('/posts', params)
       if (data.success && data.posts) {
-        setPosts(data.posts)
+        setPosts(sortPostsLatestFirst(data.posts))
       }
     } catch (err) {
       console.error('Error fetching posts:', err)

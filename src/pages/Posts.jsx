@@ -6,9 +6,10 @@ import CTASection from '../components/home/CTASection'
 import { posts as staticPosts } from '../data/posts'
 import { thirdbackground } from '../assets/images'
 import api from '../utils/api'
+import { sortPostsLatestFirst } from '../utils/postUtils'
 
 export default function Posts() {
-  const [postsList, setPostsList] = useState(staticPosts)
+  const [postsList, setPostsList] = useState(() => sortPostsLatestFirst(staticPosts))
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function Posts() {
       try {
         const data = await api.get('/posts', { status: 'published' })
         if (data.success && data.posts && data.posts.length > 0) {
-          setPostsList(data.posts)
+          setPostsList(sortPostsLatestFirst(data.posts))
         }
       } catch (err) {
         console.warn('Using static posts fallback:', err.message)
