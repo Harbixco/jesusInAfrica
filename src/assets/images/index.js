@@ -33,6 +33,8 @@ import jiaOgun2024_6 from './JIA-Ogun-2024-6.webp'
 import jiaOgun2024_9 from './JIA-Ogun-2024-9.webp'
 import oludamolaDaramola2 from './Oludamola-Daramola-2.webp'
 import aboutus from './aboutus.webp'
+import flyerEdinburghHealingRoom from './flyer-edinburgh-healing-room.jpg'
+import flyerLiberiaCrusade2027 from './flyer-liberia-crusade-2027.jpg'
 const aboutUs = aboutus
 
 export {
@@ -71,5 +73,7 @@ export {
   oludamolaDaramola2,
   aboutus,
   aboutUs,
+  flyerEdinburghHealingRoom,
+  flyerLiberiaCrusade2027,
 }
 

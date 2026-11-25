@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ArrowRight, ChevronLeft, ChevronRight, X, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, CalendarDays, MapPin, Maximize2, X } from 'lucide-react'
 import Seo from '../components/common/Seo'
 import EventGrid from '../components/events/EventGrid'
 import CTASection from '../components/home/CTASection'
@@ -17,7 +18,34 @@ import {
   jiaOgun2024_9,
   thirdbackground,
   jiaOgun2024_16,
+  flyerEdinburghHealingRoom,
+  flyerLiberiaCrusade2027,
 } from '../assets/images'
+
+const upcomingFlyers = [
+  {
+    id: 'edinburgh-2026',
+    title: 'Jesus on the Street — Be Healed',
+    subtitle:
+      'Join The Healing Room with Oludamola Daramola as we go out into the streets to preach the gospel, pray for, and heal the sick.',
+    date: 'Dec 4 & 5, 2026',
+    location: 'Edinburgh',
+    ctaLabel: 'Register for Details',
+    ctaLink: '/contact',
+    image: flyerEdinburghHealingRoom,
+  },
+  {
+    id: 'liberia-2027',
+    title: 'Jesus Crusade — Live in Liberia',
+    subtitle:
+      'Anticipate a mighty move of God across Liberia. For enquiries & partnership, call +234 903 941 5354.',
+    date: 'By 2027',
+    location: 'Liberia',
+    ctaLabel: 'Enquire & Partner',
+    ctaLink: '/contact',
+    image: flyerLiberiaCrusade2027,
+  },
+]
 
 const conferenceFlyers = [
   {
@@ -109,14 +137,95 @@ export default function Events() {
         </div>
       </section>
 
-      {/* Top Section: Heading & Conference Flyers Showcase */}
-      <section className="pt-16 sm:pt-20 pb-12 sm:pb-16 bg-white">
+      {/* Top Section: Heading & Upcoming Events Flyers Showcase */}
+      <section className="pt-16 sm:pt-20 pb-14 sm:pb-16 bg-white">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
           {/* Main Showcase Title */}
-          <div className="max-w-3xl mb-12 sm:mb-16">
+          <div className="max-w-3xl mb-10 sm:mb-12">
+            <p className="font-body text-xs uppercase tracking-[3px] font-semibold text-[#FD9800] mb-3">
+              Upcoming Events &amp; Crusades
+            </p>
             <h2 className="font-heading font-bold text-3xl sm:text-4xl md:text-5xl text-[#0F172A] leading-tight">
               JIA hosts a variety of events aimed at equipping and empowering believers
             </h2>
+          </div>
+
+          {/* Featured 2 Upcoming Flyers Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 max-w-4xl mx-auto">
+            {upcomingFlyers.map((flyer) => (
+              <div
+                key={flyer.id}
+                onClick={() =>
+                  setLightboxImage({
+                    src: flyer.image,
+                    caption: `${flyer.title} — ${flyer.date} (${flyer.location})`,
+                  })
+                }
+                className="bg-white rounded-md overflow-hidden shadow-lg hover:shadow-2xl border border-gray-100 ring-1 ring-[#FD9800]/30 hover:ring-[#FD9800]/75 transition-all duration-300 flex flex-col cursor-pointer group"
+              >
+                <div className="relative aspect-[4/5] bg-[#0F172A] overflow-hidden">
+                  <img
+                    src={flyer.image}
+                    alt={`${flyer.title} (${flyer.date})`}
+                    className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                  />
+                  <div className="absolute bottom-3 right-3 bg-[#0F172A]/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-1 rounded flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Maximize2 size={12} />
+                    <span>Enlarge Flyer</span>
+                  </div>
+                </div>
+
+                <div className="p-5 sm:p-6 bg-white flex-1 flex flex-col justify-between border-t border-gray-100">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold mb-2.5">
+                      <span className="inline-flex items-center gap-1.5 text-[#FD9800] uppercase tracking-wider">
+                        <CalendarDays size={14} />
+                        {flyer.date}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 text-[#64748B]">
+                        <MapPin size={14} />
+                        {flyer.location}
+                      </span>
+                    </div>
+                    <h3 className="font-heading font-bold text-lg sm:text-xl text-[#0F172A] group-hover:text-[#FD9800] transition-colors mb-2">
+                      {flyer.title}
+                    </h3>
+                    <p className="font-body text-[13.5px] leading-relaxed text-[#454F5E] mb-4">
+                      {flyer.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="pt-3.5 border-t border-gray-100 flex items-center justify-between gap-3">
+                    <span className="text-xs font-semibold text-[#64748B] group-hover:text-[#0F172A] transition-colors">
+                      Click to view flyer
+                    </span>
+                    <Link
+                      to={flyer.ctaLink}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[1.5px] text-[#FD9800] hover:text-[#E98C00] transition-colors"
+                    >
+                      {flyer.ctaLabel}
+                      <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Past Conferences Section: Previous 3 Flyers Moved Downward */}
+      <section className="py-14 sm:py-16 bg-[#FAF9F5] border-y border-gray-100">
+        <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+            <p className="font-body text-xs uppercase tracking-[3px] font-semibold text-[#FD9800] mb-2">
+              Past Conferences &amp; Outreaches
+            </p>
+            <h3 className="font-heading font-bold text-2xl sm:text-3xl text-[#0F172A] mb-3">
+              Previous Ministry Gatherings
+            </h3>
+            <div className="w-12 h-0.5 bg-[#FD9800] mx-auto" />
           </div>
 
           {/* Flyers Showcase Carousel / Row */}
@@ -129,7 +238,10 @@ export default function Events() {
                     key={flyer.id}
                     onClick={() => {
                       setActiveFlyerIndex(idx)
-                      setLightboxImage({ src: flyer.image, caption: flyer.title })
+                      setLightboxImage({
+                        src: flyer.image,
+                        caption: `${flyer.title} — ${flyer.date}`,
+                      })
                     }}
                     className={`cursor-pointer transition-all duration-500 rounded-sm overflow-hidden group ${
                       isCenter
@@ -137,13 +249,13 @@ export default function Events() {
                         : 'md:scale-95 opacity-90 hover:opacity-100 shadow-md hover:shadow-xl'
                     }`}
                   >
-                    <div className="relative aspect-[3/4] bg-slate-900 overflow-hidden">
+                    <div className="relative aspect-[4/5] bg-slate-900 overflow-hidden">
                       <img
                         src={flyer.image}
                         alt={flyer.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                      <div className="absolute inset-0 bg-black/15 group-hover:bg-transparent transition-colors" />
                     </div>
                   </div>
                 )
