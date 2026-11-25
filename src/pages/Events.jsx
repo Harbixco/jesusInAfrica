@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight, CalendarDays, MapPin, Maximize2, X } from 'lucide-react'
+import { CalendarDays, MapPin, Maximize2, X } from 'lucide-react'
 import Seo from '../components/common/Seo'
 import EventGrid from '../components/events/EventGrid'
 import CTASection from '../components/home/CTASection'
@@ -30,8 +29,6 @@ const upcomingFlyers = [
       'Join The Healing Room with Oludamola Daramola as we go out into the streets to preach the gospel, pray for, and heal the sick.',
     date: 'Dec 4 & 5, 2026',
     location: 'Edinburgh',
-    ctaLabel: 'Register for Details',
-    ctaLink: '/contact',
     image: flyerEdinburghHealingRoom,
   },
   {
@@ -41,8 +38,6 @@ const upcomingFlyers = [
       'Anticipate a mighty move of God across Liberia. For enquiries & partnership, call +234 903 941 5354.',
     date: 'By 2027',
     location: 'Liberia',
-    ctaLabel: 'Enquire & Partner',
-    ctaLink: '/contact',
     image: flyerLiberiaCrusade2027,
   },
 ]
@@ -175,39 +170,23 @@ export default function Events() {
                   </div>
                 </div>
 
-                <div className="p-5 sm:p-6 bg-white flex-1 flex flex-col justify-between border-t border-gray-100">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold mb-2.5">
-                      <span className="inline-flex items-center gap-1.5 text-[#FD9800] uppercase tracking-wider">
-                        <CalendarDays size={14} />
-                        {flyer.date}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 text-[#64748B]">
-                        <MapPin size={14} />
-                        {flyer.location}
-                      </span>
-                    </div>
-                    <h3 className="font-heading font-bold text-lg sm:text-xl text-[#0F172A] group-hover:text-[#FD9800] transition-colors mb-2">
-                      {flyer.title}
-                    </h3>
-                    <p className="font-body text-[13.5px] leading-relaxed text-[#454F5E] mb-4">
-                      {flyer.subtitle}
-                    </p>
-                  </div>
-
-                  <div className="pt-3.5 border-t border-gray-100 flex items-center justify-between gap-3">
-                    <span className="text-xs font-semibold text-[#64748B] group-hover:text-[#0F172A] transition-colors">
-                      Click to view flyer
+                <div className="p-5 sm:p-6 bg-white flex-1 border-t border-gray-100">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-semibold mb-2.5">
+                    <span className="inline-flex items-center gap-1.5 text-[#FD9800] uppercase tracking-wider">
+                      <CalendarDays size={14} />
+                      {flyer.date}
                     </span>
-                    <Link
-                      to={flyer.ctaLink}
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[1.5px] text-[#FD9800] hover:text-[#E98C00] transition-colors"
-                    >
-                      {flyer.ctaLabel}
-                      <ArrowRight size={14} />
-                    </Link>
+                    <span className="inline-flex items-center gap-1.5 text-[#64748B]">
+                      <MapPin size={14} />
+                      {flyer.location}
+                    </span>
                   </div>
+                  <h3 className="font-heading font-bold text-lg sm:text-xl text-[#0F172A] group-hover:text-[#FD9800] transition-colors mb-2">
+                    {flyer.title}
+                  </h3>
+                  <p className="font-body text-[13.5px] leading-relaxed text-[#454F5E]">
+                    {flyer.subtitle}
+                  </p>
                 </div>
               </div>
             ))}
